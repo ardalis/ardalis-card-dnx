@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ardalis</ToolCommandName>
+    <PackageId>ardalis</PackageId>
+    <Description>Ardalis .NET business card CLI</Description>
+    <Version>1.0.2</Version>
+    <Authors>Ardalis (Steve Smith)</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console.Cli" Version="0.48.0" />
+    <PackageReference Include="Spectre.Console" Version="0.48.0" />
+  </ItemGroup>
+
+</Project>
