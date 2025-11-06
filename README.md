@@ -54,10 +54,38 @@ Display popular GitHub repositories:
 dnx ardalis repos
 ```
 
+Display popular NuGet packages:
+
+```bash
+dnx ardalis packages
+# or show all packages including sub-packages
+dnx ardalis packages --all
+```
+
 Display published books:
 
 ```bash
 dnx ardalis books
+```
+
+Display recent activity across platforms:
+
+```bash
+dnx ardalis recent
+# or use verbose mode to see detailed progress
+dnx ardalis recent --verbose
+```
+
+Display a random coding tip:
+
+```bash
+dnx ardalis tips
+```
+
+Display available courses:
+
+```bash
+dnx ardalis courses
 ```
 
 Check the version:
@@ -97,6 +125,28 @@ In interactive mode, simply type commands:
 
 Exit by typing `exit`, `quit`, or pressing Enter on an empty line.
 
+### Recent Activity Command
+
+The `recent` command displays your latest activity from multiple platforms:
+
+```bash
+dnx ardalis recent
+```
+
+Use `--verbose` to see detailed progress from each source:
+
+```bash
+dnx ardalis recent --verbose
+```
+
+The verbose mode shows:
+
+- ✅ Number of results found from each source
+- ⚠️ Sources with no results
+- ❌ Any errors encountered while fetching data
+
+Activity is displayed with relative timestamps like "5 min ago" or "2 hours ago" for recent items, and short dates for older items.
+
 ## Permanent Installation
 
 To install globally and run as just `ardalis` (without `dnx`):
@@ -114,7 +164,11 @@ ardalis blog       # Open blog
 ardalis youtube    # Open YouTube channel
 ardalis quote      # Display random quote
 ardalis repos      # Display popular GitHub repositories
+ardalis packages   # Display popular NuGet packages
 ardalis books      # Display published books
+ardalis recent     # Display recent activity across platforms
+ardalis tips       # Display a random coding tip
+ardalis courses    # Display available courses
 ardalis --version  # Check version
 ```
 
