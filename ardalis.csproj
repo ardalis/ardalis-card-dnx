@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.5.0</Version>
-    <ReleaseNotes>Added --with-covers flag to 'books' command to display book cover images. Updated Spectre.Console packages to 0.53.0 for enhanced image rendering and security fixes.</ReleaseNotes>
+    <Version>1.6.0</Version>
+    <ReleaseNotes>Added 'packages' command to display popular Ardalis NuGet packages with download counts and descriptions. Shows top 10 main packages by default, use --all flag to see all packages including sub-packages.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
