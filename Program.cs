@@ -25,6 +25,7 @@ if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "he
         config.AddCommand<ReposCommand>("repos").WithDescription("Display popular Ardalis GitHub repositories.");
         config.AddCommand<PackagesCommand>("packages").WithDescription("Display popular Ardalis NuGet packages.");
         config.AddCommand<BooksCommand>("books").WithDescription("Display published books by Ardalis.");
+        config.AddCommand<TipsCommand>("tips").WithDescription("Display a random coding tip.");
         
         config.AddExample("card");
         config.AddExample("blog");
@@ -74,6 +75,9 @@ app.Configure(config =>
 
     config.AddCommand<BooksCommand>("books")
         .WithDescription("Display published books by Ardalis.");
+
+    config.AddCommand<TipsCommand>("tips")
+        .WithDescription("Display a random coding tip.");
         
     config.AddExample("card");
     config.AddExample("blog");

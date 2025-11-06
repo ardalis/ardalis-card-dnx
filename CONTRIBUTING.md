@@ -109,4 +109,27 @@ The tool uses external JSON files hosted on ardalis.com for dynamic content:
 - **Fallback**: If the URL is unavailable, the tool uses a hardcoded fallback with the ASP.NET Core architecture eBook
 - **Used by**: `BooksCommand`
 
-**Note**: To update the quotes or books displayed by the tool, modify the JSON files hosted at the URLs above. The tool will automatically fetch the latest content on each run.
+#### Tips (`tips.json`)
+
+- **Location**: `https://ardalis.com/tips.json`
+- **Format**: JSON array of tip objects
+- **Schema**:
+
+  ```json
+  [
+    {
+      "tipText": "Always include units in non-Timespan time variables/properties (e.g. `int timeoutMilliseconds` not `int timeout`).",
+      "referenceLink": "https://ardalis.com/use-timespan-or-specify-units-in-duration-properties-and-parameters"
+    },
+    {
+      "tipText": "Use guard clauses to improve code readability and reduce nesting.",
+      "referenceLink": "https://ardalis.com/guard-clauses"
+    }
+  ]
+  ```
+
+- **Required Fields**: `tipText`, `referenceLink`
+- **Fallback**: If the URL is unavailable, the tool uses a hardcoded fallback tip about including units in time variables
+- **Used by**: `TipsCommand` via `TipHelper`
+
+**Note**: To update the quotes, books, or tips displayed by the tool, modify the JSON files hosted at the URLs above. The tool will automatically fetch the latest content on each run.
