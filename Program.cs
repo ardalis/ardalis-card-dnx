@@ -3,6 +3,8 @@ using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Diagnostics;
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 var app = new CommandApp();
 
@@ -16,6 +18,9 @@ app.Configure(config =>
 
     config.AddCommand<YouTubeCommand>("youtube")
         .WithDescription("Open Ardalis's YouTube channel.");
+
+    config.AddCommand<QuoteCommand>("quote")
+        .WithDescription("Display a random Ardalis quote.");
 });
 
 return app.Run(args);
@@ -92,6 +97,16 @@ public class YouTubeCommand : Command
     }
 }
 
+public class QuoteCommand : Command
+{
+    public override int Execute(CommandContext context)
+    {
+        var quote = QuoteHelper.GetRandomQuote().GetAwaiter().GetResult();
+        AnsiConsole.WriteLine($"\"{quote}\" - Ardalis");
+        return 0;
+    }
+}
+
 // ===== HELPER =====
 
 public static class UrlHelper
@@ -112,5 +127,34 @@ public static class UrlHelper
         {
             AnsiConsole.MarkupLine($"[red]Failed to open URL:[/] {ex.Message}");
         }
+    }
+}
+
+public static class QuoteHelper
+{
+    private const string QuotesUrl = "https://ardalis.com/quotes.json";
+    private const string FallbackQuote = "New is glue.";
+    private static readonly HttpClient _httpClient = new HttpClient();
+
+    public static async Task<string> GetRandomQuote()
+    {
+        try
+        {
+            _httpClient.Timeout = TimeSpan.FromSeconds(5);
+            var response = await _httpClient.GetStringAsync(QuotesUrl);
+            var quotes = System.Text.Json.JsonSerializer.Deserialize<string[]>(response);
+            
+            if (quotes != null && quotes.Length > 0)
+            {
+                var random = new Random();
+                return quotes[random.Next(quotes.Length)];
+            }
+        }
+        catch
+        {
+            // Fall back to default quote if URL is unavailable
+        }
+
+        return FallbackQuote;
     }
 }
