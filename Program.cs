@@ -6,6 +6,12 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+// Check for interactive mode
+if (args.Length > 0 && (args[0] == "-i" || args[0] == "--interactive"))
+{
+    return await InteractiveMode.RunAsync();
+}
+
 var app = new CommandApp();
 
 app.Configure(config =>
@@ -27,7 +33,7 @@ app.Configure(config =>
         
     config.AddExample("card");
     config.AddExample("blog");
-    config.AddExample("--version");
+    config.AddExample("-i");
 });
 
 return app.Run(args);
@@ -37,6 +43,44 @@ return app.Run(args);
 public class CardCommand : Command
 {
     public override int Execute(CommandContext context)
+    {
+        CommandHandlers.ShowCard();
+        return 0;
+    }
+}
+
+public class BlogCommand : Command
+{
+    public override int Execute(CommandContext context)
+    {
+        CommandHandlers.OpenBlog();
+        return 0;
+    }
+}
+
+public class YouTubeCommand : Command
+{
+    public override int Execute(CommandContext context)
+    {
+        CommandHandlers.OpenYouTube();
+        return 0;
+    }
+}
+
+public class QuoteCommand : AsyncCommand
+{
+    public override async Task<int> ExecuteAsync(CommandContext context)
+    {
+        await CommandHandlers.ShowQuoteAsync();
+        return 0;
+    }
+}
+
+// ===== COMMAND HANDLERS =====
+
+public static class CommandHandlers
+{
+    public static void ShowCard()
     {
         // Top rule with standard color
         var top = new Rule("[deepskyblue3]────────────────────────────────────────[/]")
@@ -77,40 +121,26 @@ public class CardCommand : Command
         AnsiConsole.Write(bottom);
 
         AnsiConsole.MarkupLine("\n[dim]Try '[deepskyblue3]ardalis blog[/]' or '[mediumorchid1]ardalis youtube[/]' for more options[/]");
-
-        return 0;
     }
-}
 
-public class BlogCommand : Command
-{
-    public override int Execute(CommandContext context)
+    public static void OpenBlog()
     {
         var url = "https://ardalis.com";
         AnsiConsole.MarkupLine($"[bold green]Opening blog:[/] {url}");
         UrlHelper.Open(url);
-        return 0;
     }
-}
 
-public class YouTubeCommand : Command
-{
-    public override int Execute(CommandContext context)
+    public static void OpenYouTube()
     {
         var url = "https://youtube.com/@Ardalis";
         AnsiConsole.MarkupLine($"[bold red]Opening YouTube channel:[/] {url}");
         UrlHelper.Open(url);
-        return 0;
     }
-}
 
-public class QuoteCommand : AsyncCommand
-{
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public static async Task ShowQuoteAsync()
     {
         var quote = await QuoteHelper.GetRandomQuote();
         AnsiConsole.WriteLine($"\"{quote}\" - Ardalis");
-        return 0;
     }
 }
 
@@ -167,3 +197,76 @@ public static class QuoteHelper
         }
     }
 }
+
+public static class InteractiveMode
+{
+    public static async Task<int> RunAsync()
+    {
+        AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
+        AnsiConsole.MarkupLine("[dim]Enter commands (card, blog, youtube, quote). Press Ctrl+C or type 'exit' to quit.[/]\n");
+
+        while (true)
+        {
+            var input = AnsiConsole.Prompt(
+                new TextPrompt<string>("[deepskyblue3]>[/]")
+                    .AllowEmpty()
+            );
+
+            // Handle exit conditions
+            if (string.IsNullOrWhiteSpace(input) || 
+                input.Equals("exit", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("quit", StringComparison.OrdinalIgnoreCase))
+            {
+                AnsiConsole.MarkupLine("[dim]Goodbye![/]");
+                return 0;
+            }
+
+            // Process commands
+            var command = input.Trim().ToLowerInvariant();
+            
+            try
+            {
+                switch (command)
+                {
+                    case "card":
+                        CommandHandlers.ShowCard();
+                        break;
+                    
+                    case "blog":
+                        CommandHandlers.OpenBlog();
+                        break;
+                    
+                    case "youtube":
+                        CommandHandlers.OpenYouTube();
+                        break;
+                    
+                    case "quote":
+                        await CommandHandlers.ShowQuoteAsync();
+                        break;
+                    
+                    case "help":
+                    case "?":
+                        AnsiConsole.MarkupLine("[bold]Available commands:[/]");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]card[/]    - Display business card");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]quote[/]   - Display random quote");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]exit[/]    - Exit interactive mode");
+                        break;
+                    
+                    default:
+                        AnsiConsole.MarkupLine($"[red]Unknown command:[/] {input}");
+                        AnsiConsole.MarkupLine("[dim]Type 'help' for available commands.[/]");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
+            }
+
+            AnsiConsole.WriteLine();
+        }
+    }
+}
+
