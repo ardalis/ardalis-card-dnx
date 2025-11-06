@@ -199,7 +199,7 @@ public static class RecentHelper
             if (Title.Length <= maxWidth)
                 return Title;
             
-            return Title.Substring(0, maxWidth - 3) + "...";
+            return Title[..(maxWidth - 3)] + "...";
         }
     }
 }
