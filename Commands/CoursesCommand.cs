@@ -1,0 +1,137 @@
+using Spectre.Console;
+using Spectre.Console.Cli;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Ardalis.Commands;
+
+public class CoursesCommand : AsyncCommand
+{
+    private static readonly HttpClient _httpClient = new HttpClient
+    {
+        Timeout = TimeSpan.FromSeconds(10)
+    };
+
+    private const string CoursesJsonUrl = "https://ardalis.com/courses.json";
+
+    static CoursesCommand()
+    {
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "ardalis-cli");
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
+    {
+        AnsiConsole.MarkupLine("[bold green]Ardalis's Available Courses[/]\n");
+
+        List<Course> courses;
+        
+        try
+        {
+            // Try to fetch courses from the URL
+            courses = await FetchCoursesFromUrl();
+        }
+        catch
+        {
+            // Fallback to hard-coded courses if URL is unavailable
+            AnsiConsole.MarkupLine("[dim]Using fallback course list...[/]\n");
+            courses = GetFallbackCourses();
+        }
+
+        if (courses.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]No courses available at the moment.[/]");
+            return 0;
+        }
+
+        // Group courses by platform
+        var coursesByPlatform = courses
+            .GroupBy(c => c.Platform ?? "Other")
+            .OrderBy(g => g.Key);
+
+        // Display courses grouped by platform
+        foreach (var platformGroup in coursesByPlatform)
+        {
+            AnsiConsole.MarkupLine($"[bold cyan]{platformGroup.Key}[/]");
+            AnsiConsole.WriteLine();
+
+            foreach (var course in platformGroup)
+            {
+                DisplayCourse(course);
+            }
+        }
+
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim]Learn more at: [link]https://ardalis.com/courses[/][/]");
+
+        return 0;
+    }
+
+    private static async Task<List<Course>> FetchCoursesFromUrl()
+    {
+        var response = await _httpClient.GetStringAsync(CoursesJsonUrl);
+        var courses = JsonSerializer.Deserialize<List<Course>>(response, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+        return courses ?? new List<Course>();
+    }
+
+    private static List<Course> GetFallbackCourses()
+    {
+        return new List<Course>
+        {
+            new Course
+            {
+                Name = "SOLID Principles for C# Developers",
+                Link = "https://www.pluralsight.com/courses/csharp-solid-principles",
+                Platform = "Pluralsight",
+                Description = "Learn the SOLID principles of object-oriented design and how to apply them in C# to write maintainable, flexible code."
+            },
+            new Course
+            {
+                Name = "Clean Architecture",
+                Link = "https://dometrain.com/course/from-zero-to-hero-clean-architecture/",
+                Platform = "Dometrain",
+                Description = "Master Clean Architecture patterns and practices for building maintainable enterprise applications."
+            }
+        };
+    }
+
+    private static void DisplayCourse(Course course)
+    {
+        var panel = new Panel(new Markup(
+            $"[bold]{course.Name}[/]\n\n" +
+            $"{(string.IsNullOrEmpty(course.Description) ? "[dim]No description available[/]" : course.Description)}\n\n" +
+            $"[link={course.Link}]View Course →[/]"
+        ))
+        {
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Green),
+            Padding = new Padding(1, 0, 1, 0)
+        };
+
+        AnsiConsole.Write(panel);
+        AnsiConsole.WriteLine();
+    }
+
+    private class Course
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("link")]
+        public string Link { get; set; } = string.Empty;
+
+        [JsonPropertyName("platform")]
+        public string Platform { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+    }
+}

@@ -132,4 +132,32 @@ The tool uses external JSON files hosted on ardalis.com for dynamic content:
 - **Fallback**: If the URL is unavailable, the tool uses a hardcoded fallback tip about including units in time variables
 - **Used by**: `TipsCommand` via `TipHelper`
 
-**Note**: To update the quotes, books, or tips displayed by the tool, modify the JSON files hosted at the URLs above. The tool will automatically fetch the latest content on each run.
+#### Courses (`courses.json`)
+
+- **Location**: `https://ardalis.com/courses.json`
+- **Format**: JSON array of course objects
+- **Schema**:
+
+  ```json
+  [
+    {
+      "name": "SOLID Principles for C# Developers",
+      "link": "https://www.pluralsight.com/courses/csharp-solid-principles",
+      "platform": "Pluralsight",
+      "description": "Learn the SOLID principles of object-oriented design and how to apply them in C# to write maintainable, flexible code."
+    },
+    {
+      "name": "Clean Architecture",
+      "link": "https://dometrain.com/course/from-zero-to-hero-clean-architecture/",
+      "platform": "Dometrain",
+      "description": "Master Clean Architecture patterns and practices for building maintainable enterprise applications."
+    }
+  ]
+  ```
+
+- **Required Fields**: `name`, `link`
+- **Optional Fields**: `platform`, `description`
+- **Fallback**: If the URL is unavailable, the tool uses hardcoded fallback courses including SOLID Principles and Clean Architecture
+- **Used by**: `CoursesCommand`
+
+**Note**: To update the quotes, books, tips, or courses displayed by the tool, modify the JSON files hosted at the URLs above. The tool will automatically fetch the latest content on each run.
