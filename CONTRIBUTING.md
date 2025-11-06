@@ -62,3 +62,51 @@ Contributions are welcome! Feel free to:
 - Submit pull requests
 
 This is a simple project, so just ensure your code works and follows the existing style.
+
+### Resource Files
+
+The tool uses external JSON files hosted on ardalis.com for dynamic content:
+
+#### Quotes (`quotes.json`)
+
+- **Location**: `https://ardalis.com/quotes.json`
+- **Format**: JSON array of strings
+- **Example**:
+
+  ```json
+  [
+    "New is glue.",
+    "Clean code is code that is easy to understand and easy to change.",
+    "The best code is no code at all."
+  ]
+  ```
+
+- **Fallback**: If the URL is unavailable, the tool uses a hardcoded fallback quote: "New is glue."
+- **Used by**: `QuoteCommand` via `QuoteHelper`
+
+#### Books (`books.json`)
+
+- **Location**: `https://ardalis.com/books.json`
+- **Format**: JSON array of book objects
+- **Schema**:
+
+  ```json
+  [
+    {
+      "title": "Book Title",
+      "link": "https://example.com/book",
+      "coverImage": "https://example.com/cover.png",
+      "description": "Book description text",
+      "publisher": "Publisher Name",
+      "publicationDate": "2023",
+      "isbn": "ISBN-13"
+    }
+  ]
+  ```
+
+- **Required Fields**: `title`, `link`
+- **Optional Fields**: `coverImage`, `description`, `publisher`, `publicationDate`, `isbn`
+- **Fallback**: If the URL is unavailable, the tool uses a hardcoded fallback with the ASP.NET Core architecture eBook
+- **Used by**: `BooksCommand`
+
+**Note**: To update the quotes or books displayed by the tool, modify the JSON files hosted at the URLs above. The tool will automatically fetch the latest content on each run.
