@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.2.0</Version>
-    <ReleaseNotes>Added interactive mode - Run 'dnx ardalis -i' to execute multiple commands in a single session. Type commands like 'card', 'blog', 'youtube', or 'quote' without re-running the tool.</ReleaseNotes>
+    <Version>1.3.0</Version>
+    <ReleaseNotes>Added 'repos' command - Display popular Ardalis GitHub repositories with star counts and descriptions. Works in both standard and interactive modes.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

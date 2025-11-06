@@ -48,6 +48,12 @@ Display a random quote:
 dnx ardalis quote
 ```
 
+Display popular GitHub repositories:
+
+```bash
+dnx ardalis repos
+```
+
 Check the version:
 
 ```bash
@@ -70,6 +76,9 @@ In interactive mode, simply type commands:
 
 > quote
 "New is glue." - Ardalis
+
+> repos
+(displays popular GitHub repositories with stars)
 
 > blog
 (opens blog)
@@ -94,6 +103,8 @@ ardalis            # Show help
 ardalis card       # Display business card
 ardalis blog       # Open blog
 ardalis youtube    # Open YouTube channel
+ardalis quote      # Display random quote
+ardalis repos      # Display popular GitHub repositories
 ardalis --version  # Check version
 ```
 
