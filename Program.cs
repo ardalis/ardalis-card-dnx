@@ -26,6 +26,9 @@ app.Configure(config =>
 
     config.AddCommand<QuoteCommand>("quote")
         .WithDescription("Display a random Ardalis quote.");
+
+    config.AddCommand<ReposCommand>("repos")
+        .WithDescription("Display popular Ardalis GitHub repositories.");
         
     config.AddExample("card");
     config.AddExample("blog");
