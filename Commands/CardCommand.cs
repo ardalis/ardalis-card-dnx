@@ -18,9 +18,12 @@ public class CardCommand : Command
         // Card content
         var panelContent = new Markup(
             "[bold mediumorchid1]Steve 'Ardalis' Smith[/]\n" +
-            "[grey]Software Architect & Trainer[/]\n\n" +
+            "[grey]Software Architect, Speaker, and Trainer[/]\n\n" +
             "[link=https://ardalis.com][deepskyblue3]https://ardalis.com[/][/]\n" +
             "[link=https://nimblepros.com][violet]https://nimblepros.com[/][/]\n\n" +
+            "[link=https://bsky.app/profile/ardalis.com][deepskyblue3]BlueSky[/][/] • " +
+            "[link=https://www.linkedin.com/in/stevenandrewsmith/][deepskyblue3]LinkedIn[/][/] • " +
+            "[link=https://sessionize.com/ardalis][deepskyblue3]Sessionize[/][/]\n\n" +
             "[italic grey]Clean Architecture • DDD • .NET[/]"
         );
 
