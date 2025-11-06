@@ -134,20 +134,22 @@ public static class QuoteHelper
 {
     private const string QuotesUrl = "https://ardalis.com/quotes.json";
     private const string FallbackQuote = "New is glue.";
-    private static readonly HttpClient _httpClient = new HttpClient();
+    private static readonly HttpClient _httpClient = new HttpClient
+    {
+        Timeout = TimeSpan.FromSeconds(5)
+    };
+    private static readonly Random _random = new Random();
 
     public static async Task<string> GetRandomQuote()
     {
         try
         {
-            _httpClient.Timeout = TimeSpan.FromSeconds(5);
             var response = await _httpClient.GetStringAsync(QuotesUrl);
             var quotes = System.Text.Json.JsonSerializer.Deserialize<string[]>(response);
             
             if (quotes != null && quotes.Length > 0)
             {
-                var random = new Random();
-                return quotes[random.Next(quotes.Length)];
+                return quotes[_random.Next(quotes.Length)];
             }
         }
         catch
