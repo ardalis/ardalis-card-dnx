@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.7.0</Version>
-    <ReleaseNotes>Added 'tips' command to display random coding tips and 'courses' command to show available courses. Both commands fetch data dynamically with fallback support.</ReleaseNotes>
+    <Version>1.8.0</Version>
+    <ReleaseNotes>Added commands: 'contact' to open contact page, 'recent' to show latest activity across platforms, 'speaker' to open Sessionize profile, 'bluesky' to open BlueSky profile, 'linkedin' to open LinkedIn profile. Updated business card display with BlueSky, LinkedIn, and Sessionize links, and changed title to 'Software Architect, Speaker, and Trainer'.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
