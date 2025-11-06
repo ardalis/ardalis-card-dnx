@@ -42,21 +42,42 @@ Open Ardalis's YouTube channel:
 dnx ardalis youtube
 ```
 
-## Traditional Installation
+Check the version:
 
-If you prefer to install it globally (optional):
+```bash
+dnx ardalis --version
+```
+
+## Permanent Installation
+
+To install globally and run as just `ardalis` (without `dnx`):
 
 ```bash
 dotnet tool install -g ardalis
 ```
 
-Then run with just:
+Then run from anywhere:
 
 ```bash
-ardalis          # Show help
-ardalis card     # Display business card
-ardalis blog     # Open blog
-ardalis youtube  # Open YouTube channel
+ardalis            # Show help
+ardalis card       # Display business card
+ardalis blog       # Open blog
+ardalis youtube    # Open YouTube channel
+ardalis --version  # Check version
+```
+
+### Managing the Installation
+
+Update to the latest version:
+
+```bash
+dotnet tool update -g ardalis
+```
+
+Uninstall:
+
+```bash
+dotnet tool uninstall -g ardalis
 ```
 
 ## Features
@@ -67,7 +88,14 @@ ardalis youtube  # Open YouTube channel
 - 🌐 Cross-platform (Windows, macOS, Linux)
 - 🚀 Built with .NET 10.0
 
-## About dnx
+## dnx vs. Global Installation
+
+**Key Differences:**
+
+| Method | Command | Installation | Use Case |
+|--------|---------|-------------|----------|
+| **dnx** | `dnx ardalis` | None (downloads on first run) | Try it once, occasional use |
+| **Global Tool** | `ardalis` | Permanent (`dotnet tool install -g`) | Frequent use, always available |
 
 The `dnx` command is .NET's answer to Node.js's `npx`, introduced in .NET 10. It allows you to run .NET tools on-demand without explicitly installing them. Perfect for trying out tools or running one-off commands!
 

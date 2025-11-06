@@ -8,6 +8,9 @@ var app = new CommandApp();
 
 app.Configure(config =>
 {
+    config.SetApplicationName("ardalis");
+    config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0");
+    
     config.AddCommand<CardCommand>("card")
         .WithDescription("Display Ardalis's business card.");
 
@@ -16,6 +19,10 @@ app.Configure(config =>
 
     config.AddCommand<YouTubeCommand>("youtube")
         .WithDescription("Open Ardalis's YouTube channel.");
+        
+    config.AddExample("card");
+    config.AddExample("blog");
+    config.AddExample("--version");
 });
 
 return app.Run(args);
