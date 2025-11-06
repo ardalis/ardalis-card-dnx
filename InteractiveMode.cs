@@ -88,7 +88,7 @@ public static class InteractiveMode
                         break;
                     
                     case "recent":
-                        await new RecentCommand().ExecuteAsync(null!);
+                        await new RecentCommand().ExecuteAsync(null!, new RecentCommand.Settings());
                         break;
                     
                     case "help":

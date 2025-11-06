@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Spectre.Console;
 
 namespace Ardalis.Helpers;
 
@@ -16,8 +17,13 @@ public static class RecentHelper
         Timeout = TimeSpan.FromSeconds(10)
     };
 
-    public static async Task<List<RecentActivity>> GetRecentActivitiesAsync()
+    public static async Task<List<RecentActivity>> GetRecentActivitiesAsync(bool verbose = false)
     {
+        if (verbose)
+        {
+            return await GetRecentActivitiesWithVerboseAsync();
+        }
+
         // Fetch from all sources in parallel
         var tasks = new[]
         {
@@ -32,6 +38,86 @@ public static class RecentHelper
         
         // Flatten and combine all results
         var allActivities = results.SelectMany(x => x).ToList();
+        
+        // Sort by date (most recent first) and take top 5
+        return allActivities
+            .OrderByDescending(a => a.Date)
+            .Take(5)
+            .ToList();
+    }
+
+    private static async Task<List<RecentActivity>> GetRecentActivitiesWithVerboseAsync()
+    {
+        var allActivities = new List<RecentActivity>();
+
+        // Define sources
+        var sources = new List<(string Name, string Icon, Func<Task<List<RecentActivity>>> FetchFunc)>
+        {
+            ("Blog", "📝", FetchBlogPostsAsync),
+            ("YouTube", "🎥", FetchYouTubeVideosAsync),
+            ("GitHub", "⚡", FetchGitHubActivityAsync),
+            ("Bluesky", "🦋", FetchBlueskyPostsAsync),
+            ("LinkedIn", "💼", FetchLinkedInPostsAsync)
+        };
+
+        // Process each source and display results
+        foreach (var source in sources)
+        {
+            var displayName = $"{source.Icon} {source.Name}";
+            
+            try
+            {
+                var activities = await source.FetchFunc();
+                
+                if (activities.Count > 0)
+                {
+                    allActivities.AddRange(activities);
+                    var resultText = activities.Count == 1 ? "result" : "results";
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ✅ {activities.Count} {resultText} found![/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ⚠️ No results found[/]");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Extract just the error type for cleaner output
+                var errorType = ex.GetType().Name;
+                var errorMessage = ex.Message;
+                
+                // Try to extract HTTP status code if it's an HttpRequestException
+                if (ex is HttpRequestException httpEx)
+                {
+                    if (errorMessage.Contains("404"))
+                    {
+                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 404![/]");
+                    }
+                    else if (errorMessage.Contains("403"))
+                    {
+                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 403 (Forbidden)![/]");
+                    }
+                    else if (errorMessage.Contains("500"))
+                    {
+                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 500 (Server Error)![/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request failed: {errorType}![/]");
+                    }
+                }
+                else if (ex is TaskCanceledException)
+                {
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request timed out![/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Error: {errorType}![/]");
+                }
+            }
+        }
+
+        AnsiConsole.WriteLine();
         
         // Sort by date (most recent first) and take top 5
         return allActivities

@@ -1,19 +1,27 @@
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ardalis.Commands;
 
-public class RecentCommand : AsyncCommand
+public class RecentCommand : AsyncCommand<RecentCommand.Settings>
 {
-    public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
+    public class Settings : CommandSettings
+    {
+        [CommandOption("--verbose")]
+        [Description("Show detailed progress for each source")]
+        public bool Verbose { get; set; }
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
         AnsiConsole.MarkupLine("[bold]Fetching recent activity...[/]");
         AnsiConsole.WriteLine();
         
-        var activities = await RecentHelper.GetRecentActivitiesAsync();
+        var activities = await RecentHelper.GetRecentActivitiesAsync(settings.Verbose);
         
         if (activities.Count == 0)
         {
