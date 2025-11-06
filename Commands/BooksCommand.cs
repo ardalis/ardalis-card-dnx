@@ -2,16 +2,26 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ardalis.Commands;
 
-public class BooksCommand : AsyncCommand
+public class BooksCommand : AsyncCommand<BooksCommand.Settings>
 {
+    public class Settings : CommandSettings
+    {
+        [CommandOption("--with-covers")]
+        [Description("Display book cover images")]
+        public bool WithCovers { get; set; }
+    }
+
     private static readonly HttpClient _httpClient = new HttpClient
     {
         Timeout = TimeSpan.FromSeconds(10)
@@ -24,7 +34,7 @@ public class BooksCommand : AsyncCommand
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "ardalis-cli");
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
         AnsiConsole.MarkupLine("[bold blue]Ardalis's Published Books[/]\n");
 
@@ -56,7 +66,7 @@ public class BooksCommand : AsyncCommand
         // Display books
         foreach (var book in sortedBooks)
         {
-            DisplayBook(book);
+            await DisplayBook(book, settings.WithCovers);
         }
 
         AnsiConsole.WriteLine();
@@ -91,8 +101,27 @@ public class BooksCommand : AsyncCommand
         };
     }
 
-    private static void DisplayBook(Book book)
+    private static async Task DisplayBook(Book book, bool withCovers)
     {
+        // Display cover image if requested and available
+        if (withCovers && !string.IsNullOrEmpty(book.CoverImage))
+        {
+            try
+            {
+                var imageBytes = await _httpClient.GetByteArrayAsync(book.CoverImage);
+                using var imageStream = new MemoryStream(imageBytes);
+                var image = new CanvasImage(imageStream);
+                image.MaxWidth = 16; // Limit width for better terminal display
+                AnsiConsole.Write(image);
+                AnsiConsole.WriteLine();
+            }
+            catch
+            {
+                // If image fails to load, just continue without it
+                AnsiConsole.MarkupLine("[dim]📖 (Cover image unavailable)[/]");
+            }
+        }
+
         var panel = new Panel(new Markup(
             $"[bold]{book.Title}[/]\n\n" +
             $"{(string.IsNullOrEmpty(book.Description) ? "[dim]No description available[/]" : book.Description)}\n\n" +

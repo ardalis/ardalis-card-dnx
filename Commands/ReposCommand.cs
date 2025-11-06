@@ -4,6 +4,7 @@ using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ardalis.Commands;
@@ -30,7 +31,7 @@ public class ReposCommand : AsyncCommand
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "ardalis-cli");
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
     {
         AnsiConsole.MarkupLine("[bold green]Ardalis's Popular GitHub Repositories[/]\n");
 

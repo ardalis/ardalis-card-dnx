@@ -1,11 +1,12 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.Threading;
 
 namespace Ardalis.Commands;
 
 public class CardCommand : Command
 {
-    public override int Execute(CommandContext context)
+    public override int Execute(CommandContext context, CancellationToken cancellationToken = default)
     {
         // Top rule with standard color
         var top = new Rule("[deepskyblue3]────────────────────────────────────────[/]")

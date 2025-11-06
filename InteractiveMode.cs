@@ -56,7 +56,7 @@ public static class InteractiveMode
                         break;
                     
                     case "books":
-                        await new BooksCommand().ExecuteAsync(null!);
+                        await new BooksCommand().ExecuteAsync(null!, new BooksCommand.Settings());
                         break;
                     
                     case "help":

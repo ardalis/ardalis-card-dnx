@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.4.0</Version>
-    <ReleaseNotes>Added 'books' command - Display published books by Ardalis with descriptions, publisher info, and publication dates. Fetches from ardalis.com/books.json with graceful fallback. Books sorted by most recent first. Works in both standard and interactive modes.</ReleaseNotes>
+    <Version>1.5.0</Version>
+    <ReleaseNotes>Added --with-covers flag to 'books' command to display book cover images. Updated Spectre.Console packages to 0.53.0 for enhanced image rendering and security fixes.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console.Cli" Version="0.48.0" />
-    <PackageReference Include="Spectre.Console" Version="0.48.0" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
+    <PackageReference Include="Spectre.Console" Version="0.53.0" />
+    <PackageReference Include="Spectre.Console.ImageSharp" Version="0.53.0" />
   </ItemGroup>
 
 </Project>
