@@ -6,10 +6,20 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ardalis</ToolCommandName>
     <PackageId>ardalis</PackageId>
-    <Description>Ardalis .NET business card CLI</Description>
-    <Version>1.0.2</Version>
+    <Description>CLI for Ardalis resources and information - Run with 'dnx ardalis' to access blog, YouTube, business card, and more</Description>
+    <Version>1.1.0</Version>
     <Authors>Ardalis (Steve Smith)</Authors>
+    <PackageProjectUrl>https://github.com/ardalis/ardalis-card-dnx</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ardalis/ardalis-card-dnx</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Cli" Version="0.48.0" />

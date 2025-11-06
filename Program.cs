@@ -4,10 +4,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System;
 
-var app = new CommandApp<CardCommand>();
+var app = new CommandApp();
 
 app.Configure(config =>
 {
+    config.AddCommand<CardCommand>("card")
+        .WithDescription("Display Ardalis's business card.");
+
     config.AddCommand<BlogCommand>("blog")
         .WithDescription("Open Ardalis's blog.");
 
@@ -61,7 +64,7 @@ public class CardCommand : Command
         };
         AnsiConsole.Write(bottom);
 
-        AnsiConsole.MarkupLine("\n[dim]Try '[deepskyblue3]ardalis blog[/]' or '[mediumorchid1]ardalis youtube[/]'[/]");
+        AnsiConsole.MarkupLine("\n[dim]Try '[deepskyblue3]ardalis blog[/]' or '[mediumorchid1]ardalis youtube[/]' for more options[/]");
 
         return 0;
     }

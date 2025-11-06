@@ -4,7 +4,7 @@ A .NET global tool that displays a personal business card in your terminal. 💠
 
 ## Overview
 
-This is a fun CLI tool inspired by the "npx business card" trend, built for the .NET ecosystem using the new **`dnx`** command introduced in .NET 10! Run it instantly to get Steve "Ardalis" Smith's contact information and links right in your terminal—no installation required!
+A CLI tool built for the .NET ecosystem using the new **`dnx`** command introduced in .NET 10! Run it instantly to access Steve "Ardalis" Smith's resources and information—no installation required!
 
 ## Quick Start with dnx
 
@@ -16,12 +16,18 @@ dnx ardalis
 
 That's it! The first time you run it, you'll be prompted to confirm the download. After that, it runs instantly without confirmation.
 
-### Try the commands
+### Available Commands
+
+View help and available commands:
+
+```bash
+dnx ardalis
+```
 
 Display the business card:
 
 ```bash
-dnx ardalis
+dnx ardalis card
 ```
 
 Open Ardalis's blog:
@@ -47,7 +53,10 @@ dotnet tool install -g ardalis
 Then run with just:
 
 ```bash
-ardalis
+ardalis          # Show help
+ardalis card     # Display business card
+ardalis blog     # Open blog
+ardalis youtube  # Open YouTube channel
 ```
 
 ## Features
@@ -81,3 +90,7 @@ Created by Steve "Ardalis" Smith
 - 📺 [YouTube](https://youtube.com/@Ardalis)
 
 Specializing in Clean Architecture, Domain-Driven Design, and .NET development.
+
+## Contributing
+
+For maintainers: See [CONTRIBUTING.md](CONTRIBUTING.md) for instructions on publishing new versions.
