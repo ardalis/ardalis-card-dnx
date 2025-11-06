@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.9.0</Version>
-    <ReleaseNotes>Reorganized commands in help dialog.</ReleaseNotes>
+    <Version>1.10.0</Version>
+    <ReleaseNotes>Enhanced recent command with 'When' column showing relative timestamps (e.g., '5 min ago', '2 hours ago'). Added --verbose flag to show detailed progress. Fixed GitHub lightning icon display. Refactored code to eliminate duplication.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
