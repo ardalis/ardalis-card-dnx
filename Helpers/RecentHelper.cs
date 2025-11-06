@@ -63,7 +63,7 @@ public static class RecentHelper
         // Process each source and display results
         foreach (var source in sources)
         {
-            var displayName = string.IsNullOrEmpty(source.Icon) ? source.Name : $"{source.Icon} {source.Name}";
+            var displayName = $"{source.Icon} {source.Name}";
             
             try
             {
@@ -72,7 +72,8 @@ public static class RecentHelper
                 if (activities.Count > 0)
                 {
                     allActivities.AddRange(activities);
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ✅ {activities.Count} result{(activities.Count == 1 ? "" : "s")} found![/]");
+                    var resultText = activities.Count == 1 ? "result" : "results";
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ✅ {activities.Count} {resultText} found![/]");
                 }
                 else
                 {
