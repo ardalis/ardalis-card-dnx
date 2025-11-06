@@ -55,7 +55,7 @@ public static class RecentHelper
         {
             ("Blog", "📝", FetchBlogPostsAsync),
             ("YouTube", "🎥", FetchYouTubeVideosAsync),
-            ("GitHub", "", FetchGitHubActivityAsync),
+            ("GitHub", "⚡", FetchGitHubActivityAsync),
             ("Bluesky", "🦋", FetchBlueskyPostsAsync),
             ("LinkedIn", "💼", FetchLinkedInPostsAsync)
         };
@@ -76,7 +76,7 @@ public static class RecentHelper
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ⚠️  No results found[/]");
+                    AnsiConsole.MarkupLine($"[grey]{displayName}... ⚠️ No results found[/]");
                 }
             }
             catch (Exception ex)
