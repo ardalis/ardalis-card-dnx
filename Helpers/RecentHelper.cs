@@ -17,6 +17,16 @@ public static class RecentHelper
         Timeout = TimeSpan.FromSeconds(10)
     };
 
+    // Define sources once to avoid duplication
+    private static readonly List<(string Name, string Icon, Func<Task<List<RecentActivity>>> FetchFunc)> Sources = new()
+    {
+        ("Blog", "📝", FetchBlogPostsAsync),
+        ("YouTube", "🎥", FetchYouTubeVideosAsync),
+        ("GitHub", "⚡", FetchGitHubActivityAsync),
+        ("Bluesky", "🦋", FetchBlueskyPostsAsync),
+        ("LinkedIn", "💼", FetchLinkedInPostsAsync)
+    };
+
     public static async Task<List<RecentActivity>> GetRecentActivitiesAsync(bool verbose = false)
     {
         if (verbose)
@@ -25,14 +35,7 @@ public static class RecentHelper
         }
 
         // Fetch from all sources in parallel
-        var tasks = new[]
-        {
-            FetchBlogPostsAsync(),
-            FetchYouTubeVideosAsync(),
-            FetchGitHubActivityAsync(),
-            FetchBlueskyPostsAsync(),
-            FetchLinkedInPostsAsync()
-        };
+        var tasks = Sources.Select(s => s.FetchFunc()).ToArray();
 
         var results = await Task.WhenAll(tasks);
         
@@ -50,18 +53,8 @@ public static class RecentHelper
     {
         var allActivities = new List<RecentActivity>();
 
-        // Define sources
-        var sources = new List<(string Name, string Icon, Func<Task<List<RecentActivity>>> FetchFunc)>
-        {
-            ("Blog", "📝", FetchBlogPostsAsync),
-            ("YouTube", "🎥", FetchYouTubeVideosAsync),
-            ("GitHub", "⚡", FetchGitHubActivityAsync),
-            ("Bluesky", "🦋", FetchBlueskyPostsAsync),
-            ("LinkedIn", "💼", FetchLinkedInPostsAsync)
-        };
-
         // Process each source and display results
-        foreach (var source in sources)
+        foreach (var source in Sources)
         {
             var displayName = $"{source.Icon} {source.Name}";
             
