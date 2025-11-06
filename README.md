@@ -42,11 +42,42 @@ Open Ardalis's YouTube channel:
 dnx ardalis youtube
 ```
 
+Display a random quote:
+
+```bash
+dnx ardalis quote
+```
+
 Check the version:
 
 ```bash
 dnx ardalis --version
 ```
+
+### Interactive Mode
+
+Run in interactive mode to execute multiple commands without re-running the tool:
+
+```bash
+dnx ardalis -i
+```
+
+In interactive mode, simply type commands:
+
+```text
+> card
+(displays card)
+
+> quote
+"New is glue." - Ardalis
+
+> blog
+(opens blog)
+
+> exit
+```
+
+Exit by typing `exit`, `quit`, or pressing Enter on an empty line.
 
 ## Permanent Installation
 
