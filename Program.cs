@@ -21,6 +21,7 @@ if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "he
         config.AddCommand<CardCommand>("card").WithDescription("Display Ardalis's business card.");
         config.AddCommand<BlogCommand>("blog").WithDescription("Open Ardalis's blog.");
         config.AddCommand<YouTubeCommand>("youtube").WithDescription("Open Ardalis's YouTube channel.");
+        config.AddCommand<BlueSkyCommand>("bluesky").WithDescription("Open Ardalis's Bluesky profile.");
         config.AddCommand<ContactCommand>("contact").WithDescription("Open Ardalis's contact page.");
         config.AddCommand<QuoteCommand>("quote").WithDescription("Display a random Ardalis quote.");
         config.AddCommand<ReposCommand>("repos").WithDescription("Display popular Ardalis GitHub repositories.");
@@ -67,6 +68,9 @@ app.Configure(config =>
 
     config.AddCommand<YouTubeCommand>("youtube")
         .WithDescription("Open Ardalis's YouTube channel.");
+
+    config.AddCommand<BlueSkyCommand>("bluesky")
+        .WithDescription("Open Ardalis's Bluesky profile.");
 
     config.AddCommand<ContactCommand>("contact")
         .WithDescription("Open Ardalis's contact page.");
