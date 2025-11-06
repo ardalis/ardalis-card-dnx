@@ -95,10 +95,10 @@ public class CoursesCommand : AsyncCommand
             },
             new Course
             {
-                Name = "Clean Architecture",
-                Link = "https://dometrain.com/course/from-zero-to-hero-clean-architecture/",
+                Name = "Getting Started: Modular Monoliths in .NET",
+                Link = "https://dometrain.com/course/getting-started-modular-monoliths-in-dotnet/?ref=steve-ardalis-smith&coupon_code=ARDALIS",
                 Platform = "Dometrain",
-                Description = "Master Clean Architecture patterns and practices for building maintainable enterprise applications."
+                Description = "A modular monolith breaks up the application into logical modules which are largely independent from one another. This provides many of the benefits of more distributed approaches like microservices without the overhead of deploying and managing a distributed application."
             }
         };
     }
