@@ -104,11 +104,11 @@ public class YouTubeCommand : Command
     }
 }
 
-public class QuoteCommand : Command
+public class QuoteCommand : AsyncCommand
 {
-    public override int Execute(CommandContext context)
+    public override async Task<int> ExecuteAsync(CommandContext context)
     {
-        var quote = QuoteHelper.GetRandomQuote().GetAwaiter().GetResult();
+        var quote = await QuoteHelper.GetRandomQuote();
         AnsiConsole.WriteLine($"\"{quote}\" - Ardalis");
         return 0;
     }
