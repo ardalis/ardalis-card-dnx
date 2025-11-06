@@ -54,6 +54,12 @@ Display popular GitHub repositories:
 dnx ardalis repos
 ```
 
+Display published books:
+
+```bash
+dnx ardalis books
+```
+
 Check the version:
 
 ```bash
@@ -80,6 +86,9 @@ In interactive mode, simply type commands:
 > repos
 (displays popular GitHub repositories with stars)
 
+> books
+(displays published books)
+
 > blog
 (opens blog)
 
@@ -105,6 +114,7 @@ ardalis blog       # Open blog
 ardalis youtube    # Open YouTube channel
 ardalis quote      # Display random quote
 ardalis repos      # Display popular GitHub repositories
+ardalis books      # Display published books
 ardalis --version  # Check version
 ```
 

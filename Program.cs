@@ -29,6 +29,9 @@ app.Configure(config =>
 
     config.AddCommand<ReposCommand>("repos")
         .WithDescription("Display popular Ardalis GitHub repositories.");
+
+    config.AddCommand<BooksCommand>("books")
+        .WithDescription("Display published books by Ardalis.");
         
     config.AddExample("card");
     config.AddExample("blog");
