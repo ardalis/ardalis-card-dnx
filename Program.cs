@@ -18,20 +18,23 @@ if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "he
         config.SetApplicationName("ardalis");
         config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0");
         
-        config.AddCommand<CardCommand>("card").WithDescription("Display Ardalis's business card.");
-        config.AddCommand<BlogCommand>("blog").WithDescription("Open Ardalis's blog.");
-        config.AddCommand<YouTubeCommand>("youtube").WithDescription("Open Ardalis's YouTube channel.");
-        config.AddCommand<BlueSkyCommand>("bluesky").WithDescription("Open Ardalis's Bluesky profile.");
-        config.AddCommand<LinkedInCommand>("linkedin").WithDescription("Open Ardalis's LinkedIn profile.");
-        config.AddCommand<ContactCommand>("contact").WithDescription("Open Ardalis's contact page.");
-        config.AddCommand<QuoteCommand>("quote").WithDescription("Display a random Ardalis quote.");
-        config.AddCommand<ReposCommand>("repos").WithDescription("Display popular Ardalis GitHub repositories.");
-        config.AddCommand<PackagesCommand>("packages").WithDescription("Display popular Ardalis NuGet packages.");
+        // Display commands (alphabetical)
         config.AddCommand<BooksCommand>("books").WithDescription("Display published books by Ardalis.");
-        config.AddCommand<TipsCommand>("tips").WithDescription("Display a random coding tip.");
+        config.AddCommand<CardCommand>("card").WithDescription("Display Ardalis's business card.");
         config.AddCommand<CoursesCommand>("courses").WithDescription("Display available courses.");
-        config.AddCommand<SpeakerCommand>("speaker").WithDescription("Open Ardalis's Sessionize speaker profile.");
+        config.AddCommand<PackagesCommand>("packages").WithDescription("Display popular Ardalis NuGet packages.");
+        config.AddCommand<QuoteCommand>("quote").WithDescription("Display a random Ardalis quote.");
         config.AddCommand<RecentCommand>("recent").WithDescription("Display recent activity from Ardalis.");
+        config.AddCommand<ReposCommand>("repos").WithDescription("Display popular Ardalis GitHub repositories.");
+        config.AddCommand<TipsCommand>("tips").WithDescription("Display a random coding tip.");
+        
+        // Open commands (alphabetical)
+        config.AddCommand<BlogCommand>("blog").WithDescription("Open Ardalis's blog.");
+        config.AddCommand<BlueSkyCommand>("bluesky").WithDescription("Open Ardalis's Bluesky profile.");
+        config.AddCommand<ContactCommand>("contact").WithDescription("Open Ardalis's contact page.");
+        config.AddCommand<LinkedInCommand>("linkedin").WithDescription("Open Ardalis's LinkedIn profile.");
+        config.AddCommand<SpeakerCommand>("speaker").WithDescription("Open Ardalis's Sessionize speaker profile.");
+        config.AddCommand<YouTubeCommand>("youtube").WithDescription("Open Ardalis's YouTube channel.");
         
         config.AddExample("card");
         config.AddExample("blog");
@@ -61,47 +64,49 @@ app.Configure(config =>
     config.SetApplicationName("ardalis");
     config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0");
     
-    config.AddCommand<CardCommand>("card")
-        .WithDescription("Display Ardalis's business card.");
-
-    config.AddCommand<BlogCommand>("blog")
-        .WithDescription("Open Ardalis's blog.");
-
-    config.AddCommand<YouTubeCommand>("youtube")
-        .WithDescription("Open Ardalis's YouTube channel.");
-
-    config.AddCommand<BlueSkyCommand>("bluesky")
-        .WithDescription("Open Ardalis's Bluesky profile.");
-
-    config.AddCommand<LinkedInCommand>("linkedin")
-        .WithDescription("Open Ardalis's LinkedIn profile.");
-
-    config.AddCommand<ContactCommand>("contact")
-        .WithDescription("Open Ardalis's contact page.");
-
-    config.AddCommand<QuoteCommand>("quote")
-        .WithDescription("Display a random Ardalis quote.");
-
-    config.AddCommand<ReposCommand>("repos")
-        .WithDescription("Display popular Ardalis GitHub repositories.");
-
-    config.AddCommand<PackagesCommand>("packages")
-        .WithDescription("Display popular Ardalis NuGet packages.");
-
+    // Display commands (alphabetical)
     config.AddCommand<BooksCommand>("books")
         .WithDescription("Display published books by Ardalis.");
 
-    config.AddCommand<TipsCommand>("tips")
-        .WithDescription("Display a random coding tip.");
+    config.AddCommand<CardCommand>("card")
+        .WithDescription("Display Ardalis's business card.");
 
     config.AddCommand<CoursesCommand>("courses")
         .WithDescription("Display available courses.");
 
+    config.AddCommand<PackagesCommand>("packages")
+        .WithDescription("Display popular Ardalis NuGet packages.");
+
+    config.AddCommand<QuoteCommand>("quote")
+        .WithDescription("Display a random Ardalis quote.");
+
+    config.AddCommand<RecentCommand>("recent")
+        .WithDescription("Display recent activity from Ardalis.");
+
+    config.AddCommand<ReposCommand>("repos")
+        .WithDescription("Display popular Ardalis GitHub repositories.");
+
+    config.AddCommand<TipsCommand>("tips")
+        .WithDescription("Display a random coding tip.");
+
+    // Open commands (alphabetical)
+    config.AddCommand<BlogCommand>("blog")
+        .WithDescription("Open Ardalis's blog.");
+
+    config.AddCommand<BlueSkyCommand>("bluesky")
+        .WithDescription("Open Ardalis's Bluesky profile.");
+
+    config.AddCommand<ContactCommand>("contact")
+        .WithDescription("Open Ardalis's contact page.");
+
+    config.AddCommand<LinkedInCommand>("linkedin")
+        .WithDescription("Open Ardalis's LinkedIn profile.");
+
     config.AddCommand<SpeakerCommand>("speaker")
         .WithDescription("Open Ardalis's Sessionize speaker profile.");
   
-    config.AddCommand<RecentCommand>("recent")
-        .WithDescription("Display recent activity from Ardalis.");
+    config.AddCommand<YouTubeCommand>("youtube")
+        .WithDescription("Open Ardalis's YouTube channel.");
         
     config.AddExample("card");
     config.AddExample("blog");

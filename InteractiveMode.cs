@@ -10,7 +10,7 @@ public static class InteractiveMode
     public static async Task<int> RunAsync()
     {
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
-        AnsiConsole.MarkupLine("[dim]Enter commands (card, blog, youtube, bluesky, linkedin, contact, quote, repos, books, tips, courses, speaker, recent). Press Ctrl+C or type 'exit' to quit.[/]\n");
+        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, linkedin, packages, quote, recent, repos, speaker, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
         
         while (true)
         {
@@ -67,6 +67,10 @@ public static class InteractiveMode
                         await new ReposCommand().ExecuteAsync(null!);
                         break;
                     
+                    case "packages":
+                        await new PackagesCommand().ExecuteAsync(null!, new PackagesCommand.Settings());
+                        break;
+                    
                     case "books":
                         await new BooksCommand().ExecuteAsync(null!, new BooksCommand.Settings());
                         break;
@@ -82,6 +86,7 @@ public static class InteractiveMode
                     case "speaker":
                         new SpeakerCommand().Execute(null!);
                         break;
+                    
                     case "recent":
                         await new RecentCommand().ExecuteAsync(null!);
                         break;
@@ -89,19 +94,25 @@ public static class InteractiveMode
                     case "help":
                     case "?":
                         AnsiConsole.MarkupLine("[bold]Available commands:[/]");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]card[/]    - Display business card");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]bluesky[/] - Open Bluesky profile");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]linkedin[/] - Open LinkedIn profile");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]contact[/] - Open contact page");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]quote[/]   - Display random quote");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]repos[/]   - Display popular GitHub repositories");
+                        AnsiConsole.WriteLine();
+                        AnsiConsole.MarkupLine("[bold]Display Commands:[/]");
                         AnsiConsole.MarkupLine("  [deepskyblue3]books[/]   - Display published books");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]tips[/]    - Display a random coding tip");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]card[/]    - Display business card");
                         AnsiConsole.MarkupLine("  [deepskyblue3]courses[/] - Display available courses");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]speaker[/] - Open Sessionize speaker profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]packages[/] - Display popular NuGet packages");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]quote[/]   - Display random quote");
                         AnsiConsole.MarkupLine("  [deepskyblue3]recent[/]  - Display recent activity");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]repos[/]   - Display popular GitHub repositories");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]tips[/]    - Display a random coding tip");
+                        AnsiConsole.WriteLine();
+                        AnsiConsole.MarkupLine("[bold]Open Commands:[/]");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]bluesky[/] - Open Bluesky profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]contact[/] - Open contact page");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]linkedin[/] - Open LinkedIn profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]speaker[/] - Open Sessionize speaker profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
+                        AnsiConsole.WriteLine();
                         AnsiConsole.MarkupLine("  [deepskyblue3]exit[/]    - Exit interactive mode");
                         break;
                     
