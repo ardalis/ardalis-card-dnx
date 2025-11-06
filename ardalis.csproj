@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.1.1</Version>
-    <ReleaseNotes>Updated version command</ReleaseNotes>
+    <Version>1.2.0</Version>
+    <ReleaseNotes>Added interactive mode - Run 'dnx ardalis -i' to execute multiple commands in a single session. Type commands like 'card', 'blog', 'youtube', or 'quote' without re-running the tool.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
