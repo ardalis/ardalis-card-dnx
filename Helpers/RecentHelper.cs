@@ -130,7 +130,7 @@ public static class RecentHelper
     {
         try
         {
-            var response = await _httpClient.GetStringAsync("https://ardalis.com/index.xml");
+            var response = await _httpClient.GetStringAsync("https://ardalis.com/rss");
             var doc = XDocument.Parse(response);
             var ns = doc.Root?.GetDefaultNamespace();
             
@@ -207,7 +207,7 @@ public static class RecentHelper
                         Url = entry.Element(ns + "link")?.Attribute("href")?.Value ?? "",
                         Date = ParseDate(entry.Element(ns + "updated")?.Value),
                         Source = "GitHub",
-                        Icon = ""
+                        Icon = "⚡"
                     };
                 })
                 .ToList();
