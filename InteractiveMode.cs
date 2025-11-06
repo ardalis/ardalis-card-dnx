@@ -10,7 +10,7 @@ public static class InteractiveMode
     public static async Task<int> RunAsync()
     {
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
-        AnsiConsole.MarkupLine("[dim]Enter commands (card, blog, youtube, quote, repos, books, tips, courses). Press Ctrl+C or type 'exit' to quit.[/]\n");
+        AnsiConsole.MarkupLine("[dim]Enter commands (card, blog, youtube, contact, quote, repos, books, tips, courses). Press Ctrl+C or type 'exit' to quit.[/]\n");
 
         while (true)
         {
@@ -47,6 +47,10 @@ public static class InteractiveMode
                         new YouTubeCommand().Execute(null!);
                         break;
                     
+                    case "contact":
+                        new ContactCommand().Execute(null!);
+                        break;
+                    
                     case "quote":
                         await new QuoteCommand().ExecuteAsync(null!);
                         break;
@@ -73,6 +77,7 @@ public static class InteractiveMode
                         AnsiConsole.MarkupLine("  [deepskyblue3]card[/]    - Display business card");
                         AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
                         AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]contact[/] - Open contact page");
                         AnsiConsole.MarkupLine("  [deepskyblue3]quote[/]   - Display random quote");
                         AnsiConsole.MarkupLine("  [deepskyblue3]repos[/]   - Display popular GitHub repositories");
                         AnsiConsole.MarkupLine("  [deepskyblue3]books[/]   - Display published books");
