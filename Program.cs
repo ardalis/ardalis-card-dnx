@@ -9,6 +9,43 @@ if (args.Length > 0 && (args[0] == "-i" || args[0] == "--interactive"))
     return await InteractiveMode.RunAsync();
 }
 
+// Check for version flag to add update notification
+if (args.Length > 0 && (args[0] == "-v" || args[0] == "--version" || args[0] == "version"))
+{
+    var currentVersion = typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0";
+    AnsiConsole.WriteLine(currentVersion);
+    
+    // Check for updates on NuGet
+    try
+    {
+        using var httpClient = new System.Net.Http.HttpClient { Timeout = System.TimeSpan.FromSeconds(3) };
+        var response = await httpClient.GetStringAsync("https://api.nuget.org/v3-flatcontainer/ardalis/index.json");
+        var versionData = System.Text.Json.JsonSerializer.Deserialize<NuGetVersionData>(response);
+        
+        if (versionData?.Versions != null && versionData.Versions.Length > 0)
+        {
+            var latestVersion = versionData.Versions[^1]; // Get last version (latest)
+            
+            // Simple version comparison - trim trailing .0s
+            var currentVersionNormalized = currentVersion.TrimEnd('0').TrimEnd('.');
+            var latestVersionNormalized = latestVersion.TrimEnd('0').TrimEnd('.');
+            
+            if (latestVersionNormalized != currentVersionNormalized)
+            {
+                AnsiConsole.WriteLine();
+                AnsiConsole.MarkupLine($"[yellow]v{latestVersion} is available; upgrade with:[/]");
+                AnsiConsole.MarkupLine($"[cyan]dotnet tool update -g ardalis[/]");
+            }
+        }
+    }
+    catch
+    {
+        // Silently ignore if we can't check for updates
+    }
+    
+    return 0;
+}
+
 // Check for help flag to add custom installation instructions
 if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "help"))
 {
@@ -114,3 +151,6 @@ app.Configure(config =>
 });
 
 return app.Run(args);
+
+// Data class for NuGet version response
+record NuGetVersionData(string[] Versions);
