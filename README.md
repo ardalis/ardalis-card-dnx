@@ -39,6 +39,12 @@ Open Ardalis's blog:
 dnx ardalis blog
 ```
 
+Open Ardalis's Dometrain Author profile:
+
+```bash
+dnx ardalis dometrain
+```
+
 Open Ardalis's YouTube channel:
 
 ```bash
@@ -97,6 +103,12 @@ Display available courses:
 dnx ardalis courses
 ```
 
+Open NimblePros website:
+
+```bash
+dnx ardalis nimblepros
+```
+
 Check the version:
 
 ```bash
@@ -128,6 +140,9 @@ In interactive mode, simply type commands:
 
 > blog
 (opens blog)
+
+> dometrain
+(opens Dometrain Author profile)
 
 > exit
 ```
@@ -170,6 +185,7 @@ Then run from anywhere:
 ardalis            # Show help
 ardalis card       # Display business card
 ardalis blog       # Open blog
+ardalis dometrain  # Open Dometrain Author profile
 ardalis youtube    # Open YouTube channel
 ardalis pluralsight # Open Pluralsight profile
 ardalis quote      # Display random quote
@@ -179,6 +195,7 @@ ardalis books      # Display published books
 ardalis recent     # Display recent activity across platforms
 ardalis tips       # Display a random coding tip
 ardalis courses    # Display available courses
+ardalis nimblepros # Open NimblePros website
 ardalis --version  # Check version
 ```
 

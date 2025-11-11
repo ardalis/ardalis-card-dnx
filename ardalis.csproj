@@ -15,7 +15,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.12.0</Version>
-    <ReleaseNotes>Add pluralsight command to open Pluralsight profile.</ReleaseNotes>
+    <ReleaseNotes>Add dometrain, pluralsight, and nimblepros commands.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
