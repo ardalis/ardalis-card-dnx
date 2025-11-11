@@ -113,7 +113,7 @@ public static class InteractiveMode
                         AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
                         AnsiConsole.MarkupLine("  [deepskyblue3]bluesky[/] - Open Bluesky profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]contact[/] - Open contact page");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]dometrain[/] - Open Dometrain profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]dometrain[/] - Open Dometrain Author profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]linkedin[/] - Open LinkedIn profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]speaker[/] - Open Sessionize speaker profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
