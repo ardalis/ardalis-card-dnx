@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Override for local development when .NET 10 is not available -->
+    <TargetFramework Condition="'$(TargetFramework)' == 'net10.0' AND '$(NetCoreSdkVersion)' &lt; '10.0'">net9.0</TargetFramework>
+  </PropertyGroup>
+</Project>
