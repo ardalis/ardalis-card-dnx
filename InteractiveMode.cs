@@ -10,7 +10,7 @@ public static class InteractiveMode
     public static async Task<int> RunAsync()
     {
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
-        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, pluralsight, quote, recent, repos, speaker, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
+        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, pluralsight, quote, recent, repos, speaker, subscribe, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
         
         while (true)
         {
@@ -99,6 +99,10 @@ public static class InteractiveMode
                         new PluralsightCommand().Execute(null!);
                         break;
                     
+                    case "subscribe":
+                        new SubscribeCommand().Execute(null!);
+                        break;
+                    
                     case "recent":
                         await new RecentCommand().ExecuteAsync(null!, new RecentCommand.Settings());
                         break;
@@ -126,6 +130,7 @@ public static class InteractiveMode
                         AnsiConsole.MarkupLine("  [deepskyblue3]nimblepros[/] - Open NimblePros website");
                         AnsiConsole.MarkupLine("  [deepskyblue3]pluralsight[/] - Open Pluralsight profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]speaker[/] - Open Sessionize speaker profile");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]subscribe[/] - Open newsletter subscription page");
                         AnsiConsole.MarkupLine("  [deepskyblue3]youtube[/] - Open YouTube channel");
                         AnsiConsole.WriteLine();
                         AnsiConsole.MarkupLine("  [deepskyblue3]exit[/]    - Exit interactive mode");

@@ -78,6 +78,7 @@ if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "he
         config.AddCommand<PluralsightCommand>("pluralsight").WithDescription("Open Ardalis's Pluralsight profile.");
         config.AddCommand<NimbleProCommand>("nimblepros").WithDescription("Open NimblePros website.");
         config.AddCommand<SpeakerCommand>("speaker").WithDescription("Open Ardalis's Sessionize speaker profile.");
+        config.AddCommand<SubscribeCommand>("subscribe").WithDescription("Open Ardalis's newsletter subscription page.");
         config.AddCommand<YouTubeCommand>("youtube").WithDescription("Open Ardalis's YouTube channel.");
         
         config.AddExample("card");
@@ -156,6 +157,9 @@ app.Configure(config =>
 
     config.AddCommand<SpeakerCommand>("speaker")
         .WithDescription("Open Ardalis's Sessionize speaker profile.");
+
+    config.AddCommand<SubscribeCommand>("subscribe")
+        .WithDescription("Open Ardalis's newsletter subscription page.");
   
     config.AddCommand<YouTubeCommand>("youtube")
         .WithDescription("Open Ardalis's YouTube channel.");
