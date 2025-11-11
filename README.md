@@ -57,6 +57,12 @@ Open Ardalis's Pluralsight profile:
 dnx ardalis pluralsight
 ```
 
+Open Ardalis's newsletter subscription page:
+
+```bash
+dnx ardalis subscribe
+```
+
 Display a random quote:
 
 ```bash
