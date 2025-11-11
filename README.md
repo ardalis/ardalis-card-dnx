@@ -39,6 +39,12 @@ Open Ardalis's blog:
 dnx ardalis blog
 ```
 
+Open Ardalis's Dometrain Author profile:
+
+```bash
+dnx ardalis dometrain
+```
+
 Open Ardalis's YouTube channel:
 
 ```bash
@@ -129,6 +135,9 @@ In interactive mode, simply type commands:
 > blog
 (opens blog)
 
+> dometrain
+(opens Dometrain Author profile)
+
 > exit
 ```
 
@@ -170,6 +179,7 @@ Then run from anywhere:
 ardalis            # Show help
 ardalis card       # Display business card
 ardalis blog       # Open blog
+ardalis dometrain  # Open Dometrain Author profile
 ardalis youtube    # Open YouTube channel
 ardalis quote      # Display random quote
 ardalis repos      # Display popular GitHub repositories

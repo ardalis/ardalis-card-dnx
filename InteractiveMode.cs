@@ -10,7 +10,7 @@ public static class InteractiveMode
     public static async Task<int> RunAsync()
     {
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
-        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, linkedin, nimblepros, packages, quote, recent, repos, speaker, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
+        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, quote, recent, repos, speaker, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
         
         while (true)
         {
@@ -63,6 +63,10 @@ public static class InteractiveMode
                         new ContactCommand().Execute(null!);
                         break;
                     
+                    case "dometrain":
+                        new DometrainCommand().Execute(null!);
+                        break;
+                    
                     case "quote":
                         await new QuoteCommand().ExecuteAsync(null!);
                         break;
@@ -113,6 +117,7 @@ public static class InteractiveMode
                         AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");
                         AnsiConsole.MarkupLine("  [deepskyblue3]bluesky[/] - Open Bluesky profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]contact[/] - Open contact page");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]dometrain[/] - Open Dometrain Author profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]linkedin[/] - Open LinkedIn profile");
                         AnsiConsole.MarkupLine("  [deepskyblue3]nimblepros[/] - Open NimblePros website");
                         AnsiConsole.MarkupLine("  [deepskyblue3]speaker[/] - Open Sessionize speaker profile");
