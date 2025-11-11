@@ -39,7 +39,7 @@ Open Ardalis's blog:
 dnx ardalis blog
 ```
 
-Open Ardalis's Dometrain profile:
+Open Ardalis's Dometrain Author profile:
 
 ```bash
 dnx ardalis dometrain
@@ -130,7 +130,7 @@ In interactive mode, simply type commands:
 (opens blog)
 
 > dometrain
-(opens Dometrain profile)
+(opens Dometrain Author profile)
 
 > exit
 ```

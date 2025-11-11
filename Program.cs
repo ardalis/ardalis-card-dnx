@@ -142,7 +142,7 @@ app.Configure(config =>
         .WithDescription("Open Ardalis's contact page.");
 
     config.AddCommand<DometrainCommand>("dometrain")
-        .WithDescription("Open Ardalis's Dometrain profile.");
+        .WithDescription("Open Ardalis's Dometrain Author profile.");
 
     config.AddCommand<LinkedInCommand>("linkedin")
         .WithDescription("Open Ardalis's LinkedIn profile.");

@@ -10,7 +10,7 @@ public class DometrainCommand : Command
     public override int Execute(CommandContext context, CancellationToken cancellationToken = default)
     {
         var url = "https://dometrain.com/author/steve-ardalis-smith/";
-        AnsiConsole.MarkupLine($"[bold purple]Opening Dometrain profile:[/] {url}");
+        AnsiConsole.MarkupLine($"[bold purple]Opening Dometrain Author profile:[/] {url}");
         UrlHelper.Open(url);
         return 0;
     }
