@@ -14,8 +14,8 @@
     <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.11.0</Version>
-    <ReleaseNotes>Add update check to version command.</ReleaseNotes>
+    <Version>1.12.0</Version>
+    <ReleaseNotes>Add nimblepros command to open NimblePros website.</ReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

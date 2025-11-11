@@ -91,6 +91,12 @@ Display available courses:
 dnx ardalis courses
 ```
 
+Open NimblePros website:
+
+```bash
+dnx ardalis nimblepros
+```
+
 Check the version:
 
 ```bash
@@ -172,6 +178,7 @@ ardalis books      # Display published books
 ardalis recent     # Display recent activity across platforms
 ardalis tips       # Display a random coding tip
 ardalis courses    # Display available courses
+ardalis nimblepros # Open NimblePros website
 ardalis --version  # Check version
 ```
 
