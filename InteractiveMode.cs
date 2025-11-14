@@ -1,4 +1,6 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Commands;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System;
 using System.Threading.Tasks;
@@ -7,11 +9,13 @@ namespace Ardalis;
 
 public static class InteractiveMode
 {
-    public static async Task<int> RunAsync()
+    public static async Task<int> RunAsync(IServiceProvider services)
     {
+        var postHog = services.GetRequiredService<PostHogService>();
+
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
         AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, pluralsight, quote, recent, repos, speaker, subscribe, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]\n");
-        
+
         while (true)
         {
             var input = AnsiConsole.Prompt(
@@ -20,7 +24,7 @@ public static class InteractiveMode
             );
 
             // Handle exit conditions
-            if (string.IsNullOrWhiteSpace(input) || 
+            if (string.IsNullOrWhiteSpace(input) ||
                 input.Equals("exit", StringComparison.OrdinalIgnoreCase) ||
                 input.Equals("quit", StringComparison.OrdinalIgnoreCase))
             {
@@ -30,83 +34,83 @@ public static class InteractiveMode
 
             // Process commands
             var command = input.Trim().ToLowerInvariant();
-            
+
             try
             {
                 switch (command)
                 {
                     case "card":
-                        new CardCommand().Execute(null!);
+                        services.GetRequiredService<CardCommand>().Execute(null!);
                         break;
-                    
+
                     case "blog":
                         new BlogCommand().Execute(null!);
                         break;
-                    
+
                     case "youtube":
                         new YouTubeCommand().Execute(null!);
                         break;
-                    
+
                     case "bluesky":
                         new BlueSkyCommand().Execute(null!);
                         break;
-                    
+
                     case "linkedin":
                         new LinkedInCommand().Execute(null!);
                         break;
-                    
+
                     case "nimblepros":
                         new NimbleProCommand().Execute(null!);
                         break;
-                    
+
                     case "contact":
                         new ContactCommand().Execute(null!);
                         break;
-                    
+
                     case "dometrain":
                         new DometrainCommand().Execute(null!);
                         break;
-                    
+
                     case "quote":
                         await new QuoteCommand().ExecuteAsync(null!);
                         break;
-                    
+
                     case "repos":
                         await new ReposCommand().ExecuteAsync(null!);
                         break;
-                    
+
                     case "packages":
                         await new PackagesCommand().ExecuteAsync(null!, new PackagesCommand.Settings());
                         break;
-                    
+
                     case "books":
                         await new BooksCommand().ExecuteAsync(null!, new BooksCommand.Settings());
                         break;
-                    
+
                     case "tips":
                         await new TipsCommand().ExecuteAsync(null!);
                         break;
-                    
+
                     case "courses":
                         await new CoursesCommand().ExecuteAsync(null!);
                         break;
-                    
+
                     case "speaker":
                         new SpeakerCommand().Execute(null!);
                         break;
-                    
+
                     case "pluralsight":
                         new PluralsightCommand().Execute(null!);
                         break;
-                    
+
                     case "subscribe":
                         new SubscribeCommand().Execute(null!);
                         break;
-                    
+
                     case "recent":
                         await new RecentCommand().ExecuteAsync(null!, new RecentCommand.Settings());
                         break;
-                    
+
                     case "help":
                     case "?":
                         AnsiConsole.MarkupLine("[bold]Available commands:[/]");
@@ -135,7 +139,7 @@ public static class InteractiveMode
                         AnsiConsole.WriteLine();
                         AnsiConsole.MarkupLine("  [deepskyblue3]exit[/]    - Exit interactive mode");
                         break;
-                    
+
                     default:
                         AnsiConsole.MarkupLine($"[red]Unknown command:[/] {input}");
                         AnsiConsole.MarkupLine("[dim]Type 'help' for available commands.[/]");

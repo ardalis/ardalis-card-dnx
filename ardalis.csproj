@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ardalis</ToolCommandName>
     <PackageId>ardalis</PackageId>
@@ -11,11 +12,13 @@
     <PackageProjectUrl>https://github.com/ardalis/ardalis-card-dnx</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ardalis/ardalis-card-dnx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>dotnet-tool;cli;business-card;dnx</PackageTags>
+    <PackageTags>dotnet-tool;cli;business-card;dnx;ardalis;nimblepros</PackageTags>
+    <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.13.0</Version>
     <ReleaseNotes>Add subscribe command.</ReleaseNotes>
+    <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+    <PackageReference Include="PostHog.AspNetCore" Version="2.2.1" />
     <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
     <PackageReference Include="Spectre.Console" Version="0.53.0" />
+    <PackageReference Include="Spectre.Console.Extensions.Logging" Version="0.2.1" />
     <PackageReference Include="Spectre.Console.ImageSharp" Version="0.53.0" />
   </ItemGroup>
 
