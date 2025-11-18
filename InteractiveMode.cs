@@ -40,7 +40,7 @@ public static class InteractiveMode
                 switch (command)
                 {
                     case "card":
-                        services.GetRequiredService<CardCommand>().Execute(null!);
+                        new CardCommand().Execute(null!);
                         break;
 
                     case "blog":

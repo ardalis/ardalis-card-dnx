@@ -98,11 +98,7 @@ public class Program
 
         // add services
         builder.Services.AddSingleton<ArdalisCliTelemetry>();
-        //builder.Services.AddPostHog();
         builder.Services.AddSingleton<PostHogService>();
-
-        // Register commands that need DI
-        builder.Services.AddTransient<CardCommand>();
 
         var app = builder.Build();
         return app;
@@ -228,6 +224,9 @@ public class Program
         {
             config.SetApplicationName("ardalis");
             config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0");
+
+            // Add PostHog command tracking interceptor
+            config.SetInterceptor(new PostHogCommandInterceptor(posthog));
 
             // Display commands (alphabetical)
             config.AddCommand<BooksCommand>("books")
