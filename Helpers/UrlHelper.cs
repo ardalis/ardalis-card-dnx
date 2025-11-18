@@ -7,23 +7,57 @@ namespace Ardalis.Helpers;
 
 public static class UrlHelper
 {
+    /// <summary>
+    /// Removes query string parameters from a URL for display purposes
+    /// </summary>
+    public static string StripQueryString(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return url;
+
+        var queryIndex = url.IndexOf('?');
+        return queryIndex >= 0 ? url.Substring(0, queryIndex) : url;
+    }
+
+    /// <summary>
+    /// Adds utm_source=ardaliscli to a URL if not already present
+    /// </summary>
+    public static string AddUtmSource(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return url;
+
+        // Check if utm_source is already present
+        if (url.Contains("utm_source=", StringComparison.OrdinalIgnoreCase))
+            return url;
+
+        // Determine if we need ? or &
+        var separator = url.Contains('?') ? "&" : "?";
+        return $"{url}{separator}utm_source=ardaliscli";
+    }
+
     public static void Open(string url)
     {
-        AnsiConsole.MarkupLine($"Opening [link={url}]{url}[/]");
+        // Add UTM source for tracking
+        var urlWithTracking = AddUtmSource(url);
+        
+        // Display URL without query parameters for cleaner output
+        var displayUrl = StripQueryString(url);
+        AnsiConsole.MarkupLine($"Opening [link={urlWithTracking}]{displayUrl}[/]");
 
         try
         {
-            var opened = TryOpenUrl(url);
+            var opened = TryOpenUrl(urlWithTracking);
             if (!opened)
             {
                 // Fallback: display the URL as a clickable link
-                AnsiConsole.MarkupLine($"[dim]Open in your browser:[/] [link={url}]{url}[/]");
+                AnsiConsole.MarkupLine($"[dim]Open in your browser:[/] [link={urlWithTracking}]{displayUrl}[/]");
             }
         }
         catch
         {
             AnsiConsole.MarkupLine($"[yellow]Could not open browser automatically.[/]");
-            AnsiConsole.MarkupLine($"[dim]Please visit:[/] [link={url}]{url}[/]");
+            AnsiConsole.MarkupLine($"[dim]Please visit:[/] [link={urlWithTracking}]{displayUrl}[/]");
         }
     }
 

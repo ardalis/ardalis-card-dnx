@@ -1,3 +1,4 @@
+using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -122,12 +123,15 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
             }
         }
 
+        var urlWithTracking = UrlHelper.AddUtmSource(book.Link);
+        var displayUrl = UrlHelper.StripQueryString(book.Link);
+        
         var panel = new Panel(new Markup(
             $"[bold]{book.Title}[/]\n\n" +
             $"{(string.IsNullOrEmpty(book.Description) ? "[dim]No description available[/]" : book.Description)}\n\n" +
             $"[dim]Publisher:[/] {(string.IsNullOrEmpty(book.Publisher) ? "N/A" : book.Publisher)}\n" +
             $"[dim]Published:[/] {(string.IsNullOrEmpty(book.PublicationDate) ? "N/A" : book.PublicationDate)}\n\n" +
-            $"[link={book.Link}]Read More →[/]"
+            $"[dim]Learn more:[/] [link={urlWithTracking}]{displayUrl}[/]"
         ))
         {
             Border = BoxBorder.Rounded,

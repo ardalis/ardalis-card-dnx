@@ -19,7 +19,6 @@ public class ReposCommand : AsyncCommand
     private static readonly string[] RepoNames = new[]
     {
         "CleanArchitecture",
-        "ApiEndpoints",
         "Specification",
         "GuardClauses",
         "Result",
@@ -41,6 +40,8 @@ public class ReposCommand : AsyncCommand
         table.AddColumn("[bold]Stars[/]");
         table.AddColumn("[bold]Description[/]");
 
+        // Fetch all repo info
+        var repos = new System.Collections.Generic.List<(string Name, GitHubRepo Info)>();
         foreach (var repoName in RepoNames)
         {
             try
@@ -48,31 +49,35 @@ public class ReposCommand : AsyncCommand
                 var repoInfo = await GetRepoInfo(repoName);
                 if (repoInfo != null)
                 {
-                    var stars = repoInfo.StargazersCount.ToString("N0");
-                    var description = repoInfo.Description ?? "No description";
-                    
-                    // Truncate description if too long
-                    if (description.Length > 60)
-                    {
-                        description = description.Substring(0, 57) + "...";
-                    }
-
-                    table.AddRow(
-                        $"[link={repoInfo.HtmlUrl}]{repoName}[/]",
-                        $"[yellow]⭐ {stars}[/]",
-                        $"[dim]{description}[/]"
-                    );
+                    repos.Add((repoName, repoInfo));
                 }
             }
             catch
             {
                 // Skip repos that fail to load
-                table.AddRow(
-                    $"{repoName}",
-                    "[dim]N/A[/]",
-                    "[dim]Failed to load[/]"
-                );
             }
+        }
+
+        // Sort by stars descending
+        repos.Sort((a, b) => b.Info.StargazersCount.CompareTo(a.Info.StargazersCount));
+
+        // Add rows to table
+        foreach (var (repoName, repoInfo) in repos)
+        {
+            var stars = repoInfo.StargazersCount.ToString("N0");
+            var description = repoInfo.Description ?? "No description";
+
+            // Truncate description if too long
+            if (description.Length > 60)
+            {
+                description = description.Substring(0, 57) + "...";
+            }
+
+            table.AddRow(
+                $"[link={repoInfo.HtmlUrl}]{repoName}[/]",
+                $"[yellow]⭐ {stars}[/]",
+                $"[dim]{description}[/]"
+            );
         }
 
         AnsiConsole.Write(table);
@@ -96,10 +101,10 @@ public class ReposCommand : AsyncCommand
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        
+
         [JsonPropertyName("stargazers_count")]
         public int StargazersCount { get; set; }
-        
+
         [JsonPropertyName("html_url")]
         public string HtmlUrl { get; set; } = string.Empty;
     }

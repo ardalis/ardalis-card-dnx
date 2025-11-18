@@ -43,7 +43,10 @@ public class RecentCommand : AsyncCommand<RecentCommand.Settings>
             var truncatedTitle = activity.GetTruncatedTitle(60);
             var sourceWithIcon = $"{activity.Icon} {activity.Source}";
             var when = activity.GetRelativeTimeString();
-            var link = $"[link={activity.Url}]Click for details[/]";
+            
+            // Add UTM tracking to URL
+            var urlWithTracking = UrlHelper.AddUtmSource(activity.Url);
+            var link = $"[link={urlWithTracking}]Click for details[/]";
             
             table.AddRow(sourceWithIcon, truncatedTitle, when, link);
         }

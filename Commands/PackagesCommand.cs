@@ -1,3 +1,4 @@
+using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -71,8 +72,9 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
                 }
 
                 var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
                 table.AddRow(
-                    $"[link={nugetUrl}]{package.Name}[/]",
+                    $"[link={urlWithTracking}]{package.Name}[/]",
                     $"[yellow]📦 {downloads}[/]",
                     $"[dim]{description}[/]"
                 );
@@ -81,8 +83,9 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
             {
                 // Skip packages that fail to load
                 var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
                 table.AddRow(
-                    $"[link={nugetUrl}]{package.Name}[/]",
+                    $"[link={urlWithTracking}]{package.Name}[/]",
                     "[dim]N/A[/]",
                     "[dim]Failed to load stats[/]"
                 );

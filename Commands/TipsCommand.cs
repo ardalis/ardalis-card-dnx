@@ -12,10 +12,14 @@ public class TipsCommand : AsyncCommand
     {
         var tip = await TipHelper.GetRandomTip();
         
+        // Add UTM tracking to the URL but display without query string
+        var urlWithTracking = UrlHelper.AddUtmSource(tip.ReferenceLink);
+        var displayUrl = UrlHelper.StripQueryString(tip.ReferenceLink);
+        
         var panel = new Panel(new Markup(
             $"[bold yellow]💡 Coding Tip[/]\n\n" +
             $"{tip.TipText}\n\n" +
-            $"[dim]Learn more:[/] [link={tip.ReferenceLink}]{tip.ReferenceLink}[/]"
+            $"[dim]Learn more:[/] [link={urlWithTracking}]{displayUrl}[/]"
         ))
         {
             Border = BoxBorder.Rounded,

@@ -1,3 +1,4 @@
+using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -7,7 +8,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Threading.Task s;
 
 namespace Ardalis.Commands;
 
@@ -105,10 +106,13 @@ public class CoursesCommand : AsyncCommand
 
     private static void DisplayCourse(Course course)
     {
+        var urlWithTracking = UrlHelper.AddUtmSource(course.Link);
+        var displayUrl = UrlHelper.StripQueryString(course.Link);
+        
         var panel = new Panel(new Markup(
             $"[bold]{course.Name}[/]\n\n" +
             $"{(string.IsNullOrEmpty(course.Description) ? "[dim]No description available[/]" : course.Description)}\n\n" +
-            $"[link={course.Link}]View Course →[/]"
+            $"[dim]Learn more:[/] [link={urlWithTracking}]{displayUrl}[/]"
         ))
         {
             Border = BoxBorder.Rounded,

@@ -1,3 +1,4 @@
+using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Threading;
@@ -15,15 +16,21 @@ public class CardCommand : Command
         };
         AnsiConsole.Write(top);
 
-        // Card content
+        // Card content with UTM tracking
+        var ardalisUrl = UrlHelper.AddUtmSource("https://ardalis.com");
+        var nimbleprosUrl = UrlHelper.AddUtmSource("https://nimblepros.com");
+        var blueskyUrl = UrlHelper.AddUtmSource("https://bsky.app/profile/ardalis.com");
+        var linkedinUrl = UrlHelper.AddUtmSource("https://www.linkedin.com/in/stevenandrewsmith/");
+        var sessionizeUrl = UrlHelper.AddUtmSource("https://sessionize.com/ardalis");
+        
         var panelContent = new Markup(
             "[bold mediumorchid1]Steve 'Ardalis' Smith[/]\n" +
             "[grey]Software Architect, Speaker, and Trainer[/]\n\n" +
-            "[link=https://ardalis.com][deepskyblue3]https://ardalis.com[/][/]\n" +
-            "[link=https://nimblepros.com][violet]https://nimblepros.com[/][/]\n\n" +
-            "[link=https://bsky.app/profile/ardalis.com][deepskyblue3]BlueSky[/][/] • " +
-            "[link=https://www.linkedin.com/in/stevenandrewsmith/][deepskyblue3]LinkedIn[/][/] • " +
-            "[link=https://sessionize.com/ardalis][deepskyblue3]Sessionize[/][/]\n\n" +
+            $"[link={ardalisUrl}][deepskyblue3]https://ardalis.com[/][/]\n" +
+            $"[link={nimbleprosUrl}][violet]https://nimblepros.com[/][/]\n\n" +
+            $"[link={blueskyUrl}][deepskyblue3]BlueSky[/][/] • " +
+            $"[link={linkedinUrl}][deepskyblue3]LinkedIn[/][/] • " +
+            $"[link={sessionizeUrl}][deepskyblue3]Sessionize[/][/]\n\n" +
             "[italic grey]Clean Architecture • DDD • .NET[/]"
         );
 

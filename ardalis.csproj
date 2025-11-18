@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.14.0</Version>
-    <ReleaseNotes>Add analytics</ReleaseNotes>
+    <Version>1.15.0</Version>
+    <ReleaseNotes>Refactor to use command interceptor; update how URLs are parsed.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 
