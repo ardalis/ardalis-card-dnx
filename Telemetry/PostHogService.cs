@@ -139,9 +139,9 @@ public sealed class PostHogService : IDisposable
         try
         {
             // PostHog SDK batches events and sends them asynchronously
-            // Start the flush but don't wait for it - this is fire-and-forget
-            // The short delay in Program.cs gives it time to complete
-            _logger.LogDebug("Starting PostHog flush (non-blocking)");
+            // With FlushAt=1, events are typically sent immediately upon capture
+            // This flush ensures any remaining queued events are sent
+            _logger.LogDebug("Flushing any remaining PostHog events (events with FlushAt=1 are sent immediately on capture)");
 
             // Fire and forget - don't wait
             _ = _client?.FlushAsync();
@@ -149,7 +149,7 @@ public sealed class PostHogService : IDisposable
             // Minimal delay to let the flush operation start
             System.Threading.Thread.Sleep(100);
 
-            _logger.LogDebug("PostHog flush initiated, disposing client");
+            _logger.LogDebug("PostHog client disposal complete");
             _client?.Dispose();
         }
         catch (Exception ex)

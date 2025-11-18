@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.13.0</Version>
-    <ReleaseNotes>Add subscribe command.</ReleaseNotes>
+    <Version>1.14.0</Version>
+    <ReleaseNotes>Add analytics</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 

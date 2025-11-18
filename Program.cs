@@ -289,7 +289,16 @@ public class Program
             config.AddExample("-i");
         });
 
-        var exitCode = await app.RunAsync(args);
+        // Filter out debug flags before passing to Spectre.Console
+        var filteredArgs = args.Where(a => a != "--debug" && a != "-d").ToArray();
+
+        // Track when no command is provided (shows help)
+        if (filteredArgs.Length == 0)
+        {
+            posthog.TrackCommand("(none)");
+        }
+
+        var exitCode = await app.RunAsync(filteredArgs);
 
         // Give PostHog a moment to flush events in background
         // The Dispose() starts the flush asynchronously, this delay allows it to complete
