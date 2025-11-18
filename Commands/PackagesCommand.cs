@@ -17,8 +17,12 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
     public class Settings : CommandSettings
     {
         [CommandOption("--all")]
-        [Description("Show all packages including sub-packages")]
+        [Description("Show all packages without paging")]
         public bool ShowAll { get; set; }
+
+        [CommandOption("--page-size")]
+        [Description("Sets page size (default: 10)")]
+        public int PageSize { get; set; } = 10;
     }
     private static readonly HttpClient _httpClient = new HttpClient
     {
@@ -46,60 +50,57 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
         if (packages == null || packages.Length == 0)
         {
             packages = FallbackPackages;
-            if (!settings.ShowAll)
-            {
-                packages = packages.Take(10).ToArray();
-            }
         }
 
-        var table = new Table();
-        table.Border(TableBorder.Rounded);
-        table.AddColumn("[bold]Package[/]");
-        table.AddColumn("[bold]Downloads[/]");
-        table.AddColumn("[bold]Description[/]");
-
-        foreach (var package in packages)
-        {
-            try
+        // Display packages with paging
+        PagingHelper.DisplayWithPaging(
+            packages,
+            package =>
             {
-                var downloads = package.TotalDownloads.ToString("N0");
-                var description = package.Description;
+                var table = new Table();
+                table.Border(TableBorder.Rounded);
+                table.AddColumn("[bold]Package[/]");
+                table.AddColumn("[bold]Downloads[/]");
+                table.AddColumn("[bold]Description[/]");
 
-                // Truncate description if too long
-                if (description.Length > 50)
+                try
                 {
-                    description = description.Substring(0, 47) + "...";
+                    var downloads = package.TotalDownloads.ToString("N0");
+                    var description = package.Description;
+
+                    // Truncate description if too long
+                    if (description.Length > 50)
+                    {
+                        description = description.Substring(0, 47) + "...";
+                    }
+
+                    var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                    var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
+                    table.AddRow(
+                        $"[link={urlWithTracking}]{package.Name}[/]",
+                        $"[yellow]📦 {downloads}[/]",
+                        $"[dim]{description}[/]"
+                    );
+                }
+                catch
+                {
+                    // Skip packages that fail to load
+                    var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                    var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
+                    table.AddRow(
+                        $"[link={urlWithTracking}]{package.Name}[/]",
+                        "[dim]N/A[/]",
+                        "[dim]Failed to load stats[/]"
+                    );
                 }
 
-                var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
-                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
-                table.AddRow(
-                    $"[link={urlWithTracking}]{package.Name}[/]",
-                    $"[yellow]📦 {downloads}[/]",
-                    $"[dim]{description}[/]"
-                );
-            }
-            catch
-            {
-                // Skip packages that fail to load
-                var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
-                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
-                table.AddRow(
-                    $"[link={urlWithTracking}]{package.Name}[/]",
-                    "[dim]N/A[/]",
-                    "[dim]Failed to load stats[/]"
-                );
-            }
-        }
+                AnsiConsole.Write(table);
+            },
+            pageSize: settings.PageSize,
+            enablePaging: !settings.ShowAll
+        );
 
-        AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
-
-        if (!settings.ShowAll)
-        {
-            AnsiConsole.MarkupLine("[dim]Showing top 10 main packages. Use [bold]--all[/] to see all packages.[/]");
-        }
-
         AnsiConsole.MarkupLine("[dim]Visit: [link]https://www.nuget.org/profiles/ardalis[/][/]");
 
         return 0;
@@ -133,12 +134,6 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
                 .OrderByDescending(p => p.TotalDownloads)
                 .Select(p => new PackageInfo(p.Id, p.Description, p.TotalDownloads))
                 .ToArray();
-
-            // Take top 10 if not showing all
-            if (!showAll && filteredPackages.Length > 10)
-            {
-                filteredPackages = filteredPackages.Take(10).ToArray();
-            }
 
             return filteredPackages;
         }

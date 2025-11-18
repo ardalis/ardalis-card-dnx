@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using System.Threading.Task s;
+using System.Threading.Tasks;
 
 namespace Ardalis.Commands;
 
@@ -17,9 +17,9 @@ public class CoursesCommand : AsyncCommand<CoursesCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [CommandOption("--no-paging")]
-        [Description("Disable paging")]
-        public bool NoPaging { get; set; }
+        [CommandOption("--all")]
+        [Description("Show all courses without paging")]
+        public bool ShowAll { get; set; }
 
         [CommandOption("--page-size")]
         [Description("Sets page size (default: 10)")]
@@ -96,7 +96,7 @@ public class CoursesCommand : AsyncCommand<CoursesCommand.Settings>
                 DisplayCourse(item.Course);
             },
             pageSize: settings.PageSize,
-            enablePaging: !settings.NoPaging
+            enablePaging: !settings.ShowAll
         );
 
         AnsiConsole.WriteLine();
