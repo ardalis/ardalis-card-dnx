@@ -92,7 +92,7 @@ public static class InteractiveMode
                         break;
 
                     case "courses":
-                        await new CoursesCommand().ExecuteAsync(null!);
+                        await new CoursesCommand().ExecuteAsync(null!, new CoursesCommand.Settings());
                         break;
 
                     case "speaker":

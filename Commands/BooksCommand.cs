@@ -21,6 +21,14 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
         [CommandOption("--with-covers")]
         [Description("Display book cover images")]
         public bool WithCovers { get; set; }
+
+        [CommandOption("--no-paging")]
+        [Description("Disable paging")]
+        public bool NoPaging { get; set; }
+
+        [CommandOption("--page-size")]
+        [Description("Sets page size (default: 10)")]
+        public int PageSize { get; set; } = 10;
     }
 
     private static readonly HttpClient _httpClient = new HttpClient
@@ -64,11 +72,13 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
             .OrderByDescending(b => ParsePublicationYear(b.PublicationDate))
             .ToList();
 
-        // Display books
-        foreach (var book in sortedBooks)
-        {
-            await DisplayBook(book, settings.WithCovers);
-        }
+        // Display books with paging
+        PagingHelper.DisplayWithPaging(
+            sortedBooks,
+            async book => await DisplayBook(book, settings.WithCovers),
+            pageSize: settings.PageSize,
+            enablePaging: !settings.NoPaging
+        );
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Learn more at: [link]https://ardalis.com/books[/][/]");

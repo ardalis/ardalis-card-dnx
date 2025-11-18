@@ -87,6 +87,12 @@ Display published books:
 
 ```bash
 dnx ardalis books
+# Display book cover images
+dnx ardalis books --with-covers
+# Disable paging (show all books at once)
+dnx ardalis books --no-paging
+# Set page size (default: 10)
+dnx ardalis books --page-size 5
 ```
 
 Display recent activity across platforms:
@@ -107,6 +113,10 @@ Display available courses:
 
 ```bash
 dnx ardalis courses
+# Disable paging (show all courses at once)
+dnx ardalis courses --no-paging
+# Set page size (default: 10)
+dnx ardalis courses --page-size 5
 ```
 
 Open NimblePros website:
@@ -198,9 +208,9 @@ ardalis quote      # Display random quote
 ardalis repos      # Display popular GitHub repositories
 ardalis packages   # Display popular NuGet packages
 ardalis books      # Display published books
-ardalis recent     # Display recent activity across platforms
-ardalis tips       # Display a random coding tip
+ardalis books --with-covers  # Display published books with cover images
 ardalis courses    # Display available courses
+ardalis courses --no-paging  # Display all courses at once
 ardalis nimblepros # Open NimblePros website
 ardalis --version  # Check version
 ```

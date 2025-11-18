@@ -3,6 +3,7 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -12,8 +13,18 @@ using System.Threading.Task s;
 
 namespace Ardalis.Commands;
 
-public class CoursesCommand : AsyncCommand
+public class CoursesCommand : AsyncCommand<CoursesCommand.Settings>
 {
+    public class Settings : CommandSettings
+    {
+        [CommandOption("--no-paging")]
+        [Description("Disable paging")]
+        public bool NoPaging { get; set; }
+
+        [CommandOption("--page-size")]
+        [Description("Sets page size (default: 10)")]
+        public int PageSize { get; set; } = 10;
+    }
     private static readonly HttpClient _httpClient = new HttpClient
     {
         Timeout = TimeSpan.FromSeconds(10)
@@ -26,7 +37,7 @@ public class CoursesCommand : AsyncCommand
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "ardalis-cli");
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
         AnsiConsole.MarkupLine("[bold green]Ardalis's Available Courses[/]\n");
 
@@ -55,17 +66,38 @@ public class CoursesCommand : AsyncCommand
             .GroupBy(c => c.Platform ?? "Other")
             .OrderBy(g => g.Key);
 
-        // Display courses grouped by platform
+        // Flatten grouped courses for paging
+        var allCoursesToDisplay = new List<(string Platform, Course Course)>();
         foreach (var platformGroup in coursesByPlatform)
         {
-            AnsiConsole.MarkupLine($"[bold cyan]{platformGroup.Key}[/]");
-            AnsiConsole.WriteLine();
-
             foreach (var course in platformGroup)
             {
-                DisplayCourse(course);
+                allCoursesToDisplay.Add((platformGroup.Key, course));
             }
         }
+
+        // Display courses with paging
+        string currentPlatform = null;
+        PagingHelper.DisplayWithPaging(
+            allCoursesToDisplay,
+            item =>
+            {
+                // Display platform header when it changes
+                if (currentPlatform != item.Platform)
+                {
+                    if (currentPlatform != null)
+                    {
+                        AnsiConsole.WriteLine();
+                    }
+                    AnsiConsole.MarkupLine($"[bold cyan]{item.Platform}[/]");
+                    AnsiConsole.WriteLine();
+                    currentPlatform = item.Platform;
+                }
+                DisplayCourse(item.Course);
+            },
+            pageSize: settings.PageSize,
+            enablePaging: !settings.NoPaging
+        );
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Learn more at: [link]https://ardalis.com/courses[/][/]");
