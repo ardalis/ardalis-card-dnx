@@ -61,58 +61,94 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
             packages = FallbackPackages;
         }
 
-        // Display packages with paging
-        PagingHelper.DisplayWithPaging(
-            packages,
-            package =>
+        if (settings.ShowAll)
+        {
+            // Display all packages in a single table
+            DisplayPackagesTable(packages);
+        }
+        else
+        {
+            // Display packages with paging - each page is a separate table
+            var packagesList = packages.ToList();
+            var currentIndex = 0;
+
+            while (currentIndex < packagesList.Count)
             {
-                var table = new Table();
-                table.Border(TableBorder.Rounded);
-                table.AddColumn("[bold]Package[/]");
-                table.AddColumn("[bold]Downloads[/]");
-                table.AddColumn("[bold]Description[/]");
+                var endIndex = Math.Min(currentIndex + settings.PageSize, packagesList.Count);
+                var pagePackages = packagesList.Skip(currentIndex).Take(endIndex - currentIndex).ToArray();
+                
+                DisplayPackagesTable(pagePackages);
+                
+                currentIndex = endIndex;
 
-                try
+                // Check if there are more items to display
+                if (currentIndex < packagesList.Count)
                 {
-                    var downloads = package.TotalDownloads.ToString("N0");
-                    var description = package.Description;
-
-                    // Truncate description if too long
-                    if (description.Length > 50)
+                    AnsiConsole.WriteLine();
+                    AnsiConsole.Markup("[dim]Press [bold]Space[/] for more, or any other key to exit...[/]");
+                    
+                    var key = Console.ReadKey(intercept: true);
+                    AnsiConsole.WriteLine(); // Clear the prompt line
+                    
+                    if (key.Key != ConsoleKey.Spacebar)
                     {
-                        description = description.Substring(0, 47) + "...";
+                        AnsiConsole.MarkupLine("[dim]Showing {0} of {1} packages[/]", currentIndex, packagesList.Count);
+                        break;
                     }
-
-                    var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
-                    var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
-                    table.AddRow(
-                        $"[link={urlWithTracking}]{package.Name}[/]",
-                        $"[yellow]📦 {downloads}[/]",
-                        $"[dim]{description}[/]"
-                    );
+                    AnsiConsole.WriteLine(); // Add spacing between pages
                 }
-                catch
-                {
-                    // Skip packages that fail to load
-                    var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
-                    var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
-                    table.AddRow(
-                        $"[link={urlWithTracking}]{package.Name}[/]",
-                        "[dim]N/A[/]",
-                        "[dim]Failed to load stats[/]"
-                    );
-                }
-
-                AnsiConsole.Write(table);
-            },
-            pageSize: settings.PageSize,
-            enablePaging: !settings.ShowAll
-        );
+            }
+        }
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Visit: [link]https://www.nuget.org/profiles/ardalis[/][/]");
 
         return 0;
+    }
+
+    private static void DisplayPackagesTable(PackageInfo[] packages)
+    {
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.AddColumn("[bold]Package[/]");
+        table.AddColumn("[bold]Downloads[/]");
+        table.AddColumn("[bold]Description[/]");
+
+        foreach (var package in packages)
+        {
+            try
+            {
+                var downloads = package.TotalDownloads.ToString("N0");
+                var description = package.Description;
+
+                // Truncate description if too long
+                if (description.Length > 50)
+                {
+                    description = description.Substring(0, 47) + "...";
+                }
+
+                var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
+                table.AddRow(
+                    $"[link={urlWithTracking}]{package.Name}[/]",
+                    $"[yellow]📦 {downloads}[/]",
+                    $"[dim]{description}[/]"
+                );
+            }
+            catch
+            {
+                // Skip packages that fail to load
+                var nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                var urlWithTracking = UrlHelper.AddUtmSource(nugetUrl);
+                table.AddRow(
+                    $"[link={urlWithTracking}]{package.Name}[/]",
+                    "[dim]N/A[/]",
+                    "[dim]Failed to load stats[/]"
+                );
+            }
+        }
+
+        AnsiConsole.Write(table);
     }
 
     private static async Task<PackageInfo[]> GetPackagesFromApi(bool showAll)
