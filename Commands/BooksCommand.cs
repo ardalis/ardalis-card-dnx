@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -16,6 +17,13 @@ namespace Ardalis.Commands;
 
 public class BooksCommand : AsyncCommand<BooksCommand.Settings>
 {
+    private readonly PostHogService _postHog;
+
+    public BooksCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public class Settings : CommandSettings
     {
         [CommandOption("--with-covers")]
@@ -45,6 +53,7 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("books");
         AnsiConsole.MarkupLine("[bold blue]Ardalis's Published Books[/]\n");
 
         List<Book> books;

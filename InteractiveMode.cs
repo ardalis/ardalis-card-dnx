@@ -40,75 +40,75 @@ public static class InteractiveMode
                 switch (command)
                 {
                     case "card":
-                        new CardCommand().Execute(null!);
+                        new CardCommand(postHog).Execute(null!);
                         break;
 
                     case "blog":
-                        new BlogCommand().Execute(null!);
+                        new BlogCommand(postHog).Execute(null!);
                         break;
 
                     case "youtube":
-                        new YouTubeCommand().Execute(null!);
+                        new YouTubeCommand(postHog).Execute(null!);
                         break;
 
                     case "bluesky":
-                        new BlueSkyCommand().Execute(null!);
+                        new BlueSkyCommand(postHog).Execute(null!);
                         break;
 
                     case "linkedin":
-                        new LinkedInCommand().Execute(null!);
+                        new LinkedInCommand(postHog).Execute(null!);
                         break;
 
                     case "nimblepros":
-                        new NimbleProCommand().Execute(null!);
+                        new NimbleProCommand(postHog).Execute(null!);
                         break;
 
                     case "contact":
-                        new ContactCommand().Execute(null!);
+                        new ContactCommand(postHog).Execute(null!);
                         break;
 
                     case "dometrain":
-                        new DometrainCommand().Execute(null!);
+                        new DometrainCommand(postHog).Execute(null!);
                         break;
 
                     case "quote":
-                        await new QuoteCommand().ExecuteAsync(null!);
+                        await new QuoteCommand(postHog).ExecuteAsync(null!);
                         break;
 
                     case "repos":
-                        await new ReposCommand().ExecuteAsync(null!);
+                        await new ReposCommand(postHog).ExecuteAsync(null!);
                         break;
 
                     case "packages":
-                        await new PackagesCommand().ExecuteAsync(null!, new PackagesCommand.Settings());
+                        await new PackagesCommand(postHog).ExecuteAsync(null!, new PackagesCommand.Settings());
                         break;
 
                     case "books":
-                        await new BooksCommand().ExecuteAsync(null!, new BooksCommand.Settings());
+                        await new BooksCommand(postHog).ExecuteAsync(null!, new BooksCommand.Settings());
                         break;
 
                     case "tips":
-                        await new TipsCommand().ExecuteAsync(null!);
+                        await new TipsCommand(postHog).ExecuteAsync(null!);
                         break;
 
                     case "courses":
-                        await new CoursesCommand().ExecuteAsync(null!, new CoursesCommand.Settings());
+                        await new CoursesCommand(postHog).ExecuteAsync(null!, new CoursesCommand.Settings());
                         break;
 
                     case "speaker":
-                        new SpeakerCommand().Execute(null!);
+                        new SpeakerCommand(postHog).Execute(null!);
                         break;
 
                     case "pluralsight":
-                        new PluralsightCommand().Execute(null!);
+                        new PluralsightCommand(postHog).Execute(null!);
                         break;
 
                     case "subscribe":
-                        new SubscribeCommand().Execute(null!);
+                        new SubscribeCommand(postHog).Execute(null!);
                         break;
 
                     case "recent":
-                        await new RecentCommand().ExecuteAsync(null!, new RecentCommand.Settings());
+                        await new RecentCommand(postHog).ExecuteAsync(null!, new RecentCommand.Settings());
                         break;
 
                     case "help":

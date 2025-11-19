@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -15,6 +16,13 @@ namespace Ardalis.Commands;
 
 public class CoursesCommand : AsyncCommand<CoursesCommand.Settings>
 {
+    private readonly PostHogService _postHog;
+
+    public CoursesCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public class Settings : CommandSettings
     {
         [CommandOption("--all")]
@@ -39,6 +47,7 @@ public class CoursesCommand : AsyncCommand<CoursesCommand.Settings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("courses");
         AnsiConsole.MarkupLine("[bold green]Ardalis's Available Courses[/]\n");
 
         List<Course> courses;

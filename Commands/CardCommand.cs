@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -7,8 +8,16 @@ namespace Ardalis.Commands;
 
 public class CardCommand : Command
 {
+    private readonly PostHogService _postHog;
+
+    public CardCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public override int Execute(CommandContext context, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("card");
         // Top rule with standard color
         var top = new Rule("[deepskyblue3]────────────────────────────────────────[/]")
         {

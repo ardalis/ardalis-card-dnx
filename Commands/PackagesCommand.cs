@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -14,6 +15,13 @@ namespace Ardalis.Commands;
 
 public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
 {
+    private readonly PostHogService _postHog;
+
+    public PackagesCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public class Settings : CommandSettings
     {
         [CommandOption("--all")]
@@ -43,6 +51,7 @@ public class PackagesCommand : AsyncCommand<PackagesCommand.Settings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("packages");
         AnsiConsole.MarkupLine("[bold green]Ardalis's Popular NuGet Packages[/]\n");
 
         // Try to fetch packages from NuGet API, fall back to hardcoded list if it fails

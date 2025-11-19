@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.16.0</Version>
-    <ReleaseNotes>Standardize how paging works across commands.</ReleaseNotes>
+    <Version>1.17.0</Version>
+    <ReleaseNotes>Fixed an issue with how telemetry was working (or not).</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 

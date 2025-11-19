@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -8,8 +9,16 @@ namespace Ardalis.Commands;
 
 public class TipsCommand : AsyncCommand
 {
+    private readonly PostHogService _postHog;
+
+    public TipsCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("tips");
         var tip = await TipHelper.GetRandomTip();
 
         // Add UTM tracking to the URL but display without query string

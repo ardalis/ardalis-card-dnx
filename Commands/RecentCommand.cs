@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Ardalis.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,6 +10,13 @@ namespace Ardalis.Commands;
 
 public class RecentCommand : AsyncCommand<RecentCommand.Settings>
 {
+    private readonly PostHogService _postHog;
+
+    public RecentCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public class Settings : CommandSettings
     {
         [CommandOption("--verbose")]
@@ -18,6 +26,7 @@ public class RecentCommand : AsyncCommand<RecentCommand.Settings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("recent");
         AnsiConsole.MarkupLine("[bold]Fetching recent activity...[/]");
         AnsiConsole.WriteLine();
 

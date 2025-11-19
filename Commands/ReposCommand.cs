@@ -1,3 +1,4 @@
+using Ardalis.Cli.Telemetry;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
@@ -11,6 +12,7 @@ namespace Ardalis.Commands;
 
 public class ReposCommand : AsyncCommand
 {
+    private readonly PostHogService _postHog;
     private static readonly HttpClient _httpClient = new HttpClient
     {
         Timeout = TimeSpan.FromSeconds(10)
@@ -30,8 +32,14 @@ public class ReposCommand : AsyncCommand
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "ardalis-cli");
     }
 
+    public ReposCommand(PostHogService postHog)
+    {
+        _postHog = postHog;
+    }
+
     public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
     {
+        _postHog.TrackCommand("repos");
         AnsiConsole.MarkupLine("[bold green]Ardalis's Popular GitHub Repositories[/]\n");
 
         var table = new Table();

@@ -100,6 +100,26 @@ public class Program
         builder.Services.AddSingleton<ArdalisCliTelemetry>();
         builder.Services.AddSingleton<PostHogService>();
 
+        // Register all commands for DI
+        builder.Services.AddTransient<BlogCommand>();
+        builder.Services.AddTransient<BlueSkyCommand>();
+        builder.Services.AddTransient<BooksCommand>();
+        builder.Services.AddTransient<CardCommand>();
+        builder.Services.AddTransient<ContactCommand>();
+        builder.Services.AddTransient<CoursesCommand>();
+        builder.Services.AddTransient<DometrainCommand>();
+        builder.Services.AddTransient<LinkedInCommand>();
+        builder.Services.AddTransient<NimbleProCommand>();
+        builder.Services.AddTransient<PackagesCommand>();
+        builder.Services.AddTransient<PluralsightCommand>();
+        builder.Services.AddTransient<QuoteCommand>();
+        builder.Services.AddTransient<RecentCommand>();
+        builder.Services.AddTransient<ReposCommand>();
+        builder.Services.AddTransient<SpeakerCommand>();
+        builder.Services.AddTransient<SubscribeCommand>();
+        builder.Services.AddTransient<TipsCommand>();
+        builder.Services.AddTransient<YouTubeCommand>();
+
         var app = builder.Build();
         return app;
     }
@@ -126,6 +146,7 @@ public class Program
         // Check for version flag to add update notification
         if (args.Length > 0 && (args[0] == "-v" || args[0] == "--version" || args[0] == "version"))
         {
+            posthog.TrackCommand("version");
             var currentVersion = typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0";
             AnsiConsole.WriteLine(currentVersion);
 
@@ -168,6 +189,7 @@ public class Program
         // Check for help flag to add custom installation instructions
         if (args.Length > 0 && (args[0] == "-h" || args[0] == "--help" || args[0] == "help"))
         {
+            posthog.TrackCommand("help");
             var helpApp = new CommandApp();
             helpApp.Configure(config =>
             {
@@ -224,9 +246,6 @@ public class Program
         {
             config.SetApplicationName("ardalis");
             config.SetApplicationVersion(typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0");
-
-            // Add PostHog command tracking interceptor
-            config.SetInterceptor(new PostHogCommandInterceptor(posthog));
 
             // Display commands (alphabetical)
             config.AddCommand<BooksCommand>("books")
