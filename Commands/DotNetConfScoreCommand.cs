@@ -1,3 +1,4 @@
+using Ardalis.Api;
 using Ardalis.Cli.Telemetry;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -19,10 +20,12 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
     private readonly PostHogService _postHog;
     private static readonly HttpClient _httpClient = new HttpClient
     {
-        Timeout = TimeSpan.FromSeconds(30)
+        Timeout = TimeSpan.FromSeconds(30),
+        BaseAddress = new Uri("https://api.ardalis.com/")
     };
 
     private const string PlaylistsJsonUrl = "https://ardalis.com/playlists.json";
+    private const string EncodedPayload = "c2d3cTRzQlJMVUxyWThXOXcyeUdEcFY5aGRQSGNTS3ZHNHVwdjcwcmFDQQ==";
 
     public class Settings : CommandSettings
     {
@@ -63,13 +66,10 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
                 return 1;
             }
 
-            // Extract playlist ID from URL
-            var playlistId = ExtractPlaylistId(playlist.Url);
-            if (string.IsNullOrEmpty(playlistId))
-            {
-                AnsiConsole.MarkupLine("[red]Invalid playlist URL[/]");
-                return 1;
-            }
+            var apiKey = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(EncodedPayload));
+            var client = new ArdalisApiClient(_httpClient, apiKey);
+
+            var topVideos = await client.GetTopVideosAsync(playlist.Url);
 
             // Get highlight video IDs
             var highlightVideoIds = playlist.HighlightVideos
@@ -77,20 +77,11 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
                 .Where(id => !string.IsNullOrEmpty(id))
                 .ToHashSet();
 
-            // Fetch videos from YouTube
-            var videos = await FetchPlaylistVideos(playlistId);
-
-            if (videos.Count == 0)
+            if (topVideos.Count == 0)
             {
                 AnsiConsole.MarkupLine("[yellow]No videos found in the playlist[/]");
                 return 1;
             }
-
-            // Sort by views and take top 10
-            var topVideos = videos
-                .OrderByDescending(v => v.ViewCount)
-                .Take(10)
-                .ToList();
 
             // Display in a table
             DisplayVideosTable(topVideos, highlightVideoIds, settings.Year);
@@ -130,78 +121,7 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
         return playlists ?? new List<PlaylistInfo>();
     }
 
-    private static async Task<List<VideoInfo>> FetchPlaylistVideos(string playlistId)
-    {
-        // Note: This requires YouTube Data API v3 key
-        // For now, we'll use a workaround by scraping the playlist page
-        // In production, you should use: https://www.googleapis.com/youtube/v3/playlistItems
-
-        var apiKey = Environment.GetEnvironmentVariable("YOUTUBE_API_KEY");
-
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            // Fallback: Try to scrape data from the public playlist page
-            return await FetchPlaylistVideosFromPage(playlistId);
-        }
-
-        return await FetchPlaylistVideosFromApi(playlistId, apiKey);
-    }
-
-    private static async Task<List<VideoInfo>> FetchPlaylistVideosFromApi(string playlistId, string apiKey)
-    {
-        var videos = new List<VideoInfo>();
-        string pageToken = null;
-
-        do
-        {
-            var url = $"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={playlistId}&key={apiKey}";
-            if (!string.IsNullOrEmpty(pageToken))
-            {
-                url += $"&pageToken={pageToken}";
-            }
-
-            var response = await _httpClient.GetStringAsync(url);
-            var data = JsonSerializer.Deserialize<YouTubePlaylistResponse>(response);
-
-            if (data?.Items == null) break;
-
-            var videoIds = data.Items.Select(item => item.ContentDetails.VideoId).ToList();
-
-            // Fetch video statistics
-            var statsUrl = $"https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id={string.Join(",", videoIds)}&key={apiKey}";
-            var statsResponse = await _httpClient.GetStringAsync(statsUrl);
-            var statsData = JsonSerializer.Deserialize<YouTubeVideosResponse>(statsResponse);
-
-            if (statsData?.Items != null)
-            {
-                foreach (var item in statsData.Items)
-                {
-                    videos.Add(new VideoInfo
-                    {
-                        Id = item.Id,
-                        Title = item.Snippet.Title,
-                        ViewCount = long.TryParse(item.Statistics.ViewCount, out var views) ? views : 0,
-                        Url = $"https://www.youtube.com/watch?v={item.Id}"
-                    });
-                }
-            }
-
-            pageToken = data.NextPageToken;
-        } while (!string.IsNullOrEmpty(pageToken));
-
-        return videos;
-    }
-
-    private static async Task<List<VideoInfo>> FetchPlaylistVideosFromPage(string playlistId)
-    {
-        AnsiConsole.MarkupLine("[yellow]YouTube API key not found.[/]");
-        AnsiConsole.MarkupLine("[dim]Set the YOUTUBE_API_KEY environment variable to fetch playlist data.[/]");
-        AnsiConsole.MarkupLine("[dim]Get your API key at: https://console.cloud.google.com/apis/credentials[/]\n");
-
-        return new List<VideoInfo>();
-    }
-
-    private static void DisplayVideosTable(List<VideoInfo> videos, HashSet<string> highlightVideoIds, int year)
+    private static void DisplayVideosTable(List<VideoDetails> videos, HashSet<string> highlightVideoIds, int year)
     {
         var table = new Table();
         table.Border(TableBorder.Rounded);
@@ -239,12 +159,6 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]⭐ indicates Ardalis's video[/]");
-    }
-
-    private static string ExtractPlaylistId(string url)
-    {
-        var match = Regex.Match(url, @"[?&]list=([^&]+)");
-        return match.Success ? match.Groups[1].Value : null;
     }
 
     private static string ExtractVideoId(string url)
@@ -328,13 +242,5 @@ public class DotNetConfScoreCommand : AsyncCommand<DotNetConfScoreCommand.Settin
     {
         [JsonPropertyName("viewCount")]
         public string ViewCount { get; set; } = "0";
-    }
-
-    private class VideoInfo
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public long ViewCount { get; set; }
-        public string Url { get; set; } = string.Empty;
     }
 }
