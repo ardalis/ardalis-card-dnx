@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.17.0</Version>
-    <ReleaseNotes>Fixed an issue with how telemetry was working (or not).</ReleaseNotes>
+    <Version>1.18.0</Version>
+    <ReleaseNotes>Added dotnetconf-score [year] command.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 
