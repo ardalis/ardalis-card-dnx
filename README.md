@@ -127,21 +127,6 @@ dnx ardalis dotnetconf-score 2025
 dnx ardalis dotnetconf-score 2024
 ```
 
-**Note:** The `dotnetconf-score` command requires a YouTube Data API v3 key. Set the `YOUTUBE_API_KEY` environment variable:
-
-```bash
-# Windows (PowerShell)
-$env:YOUTUBE_API_KEY = "your-api-key-here"
-
-# Windows (Command Prompt)
-set YOUTUBE_API_KEY=your-api-key-here
-
-# macOS/Linux
-export YOUTUBE_API_KEY=your-api-key-here
-```
-
-To get an API key:
-
 1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
 2. Create a project (if needed)
 3. Enable [YouTube Data API v3](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
