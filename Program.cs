@@ -118,7 +118,7 @@ public class Program
         builder.Services.AddTransient<ReposCommand>();
         builder.Services.AddTransient<SpeakerCommand>();
         builder.Services.AddTransient<SubscribeCommand>();
-        builder.Services.AddTransient<TipsCommand>();
+        builder.Services.AddTransient<TipCommand>();
         builder.Services.AddTransient<YouTubeCommand>();
 
         var app = builder.Build();
@@ -206,7 +206,7 @@ public class Program
                 config.AddCommand<QuoteCommand>("quote").WithDescription("Display a random Ardalis quote.");
                 config.AddCommand<RecentCommand>("recent").WithDescription("Display recent activity from Ardalis.");
                 config.AddCommand<ReposCommand>("repos").WithDescription("Display popular Ardalis GitHub repositories.");
-                config.AddCommand<TipsCommand>("tips").WithDescription("Display a random coding tip.");
+                config.AddCommand<TipCommand>("tip").WithDescription("Display a random coding tip.");
 
                 // Open commands (alphabetical)
                 config.AddCommand<BlogCommand>("blog").WithDescription("Open Ardalis's blog.");
@@ -274,7 +274,7 @@ public class Program
             config.AddCommand<ReposCommand>("repos")
                 .WithDescription("Display popular Ardalis GitHub repositories.");
 
-            config.AddCommand<TipsCommand>("tips")
+            config.AddCommand<TipCommand>("tip")
                 .WithDescription("Display a random coding tip.");
 
             // Open commands (alphabetical)
