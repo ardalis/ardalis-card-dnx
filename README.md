@@ -51,6 +51,18 @@ Open Ardalis's YouTube channel:
 dnx ardalis youtube
 ```
 
+Open Ardalis's Bluesky profile:
+
+```bash
+dnx ardalis bluesky
+```
+
+Open Ardalis's LinkedIn profile:
+
+```bash
+dnx ardalis linkedin
+```
+
 Open Ardalis's Pluralsight profile:
 
 ```bash
@@ -140,6 +152,18 @@ Open NimblePros website:
 dnx ardalis nimblepros
 ```
 
+Open Ardalis's contact page:
+
+```bash
+dnx ardalis contact
+```
+
+Open Ardalis's Sessionize speaker profile:
+
+```bash
+dnx ardalis speaker
+```
+
 Check the version:
 
 ```bash
@@ -174,6 +198,12 @@ In interactive mode, simply type commands:
 
 > dometrain
 (opens Dometrain Author profile)
+
+> bluesky
+(opens Bluesky profile)
+
+> linkedin
+(opens LinkedIn profile)
 
 > exit
 ```
@@ -218,16 +248,23 @@ ardalis card       # Display business card
 ardalis blog       # Open blog
 ardalis dometrain  # Open Dometrain Author profile
 ardalis youtube    # Open YouTube channel
+ardalis bluesky    # Open Bluesky profile
+ardalis linkedin   # Open LinkedIn profile
 ardalis pluralsight # Open Pluralsight profile
 ardalis quote      # Display random quote
+ardalis tip        # Display random coding tip
 ardalis repos      # Display popular GitHub repositories
 ardalis packages   # Display popular NuGet packages
 ardalis books      # Display published books
 ardalis books --with-covers  # Display published books with cover images
 ardalis courses    # Display available courses
 ardalis courses --no-paging  # Display all courses at once
+ardalis recent     # Display recent activity
 ardalis dotnetconf-score 2025  # Display top .NET Conf videos by views
 ardalis nimblepros # Open NimblePros website
+ardalis contact    # Open contact page
+ardalis speaker    # Open Sessionize speaker profile
+ardalis subscribe  # Open newsletter subscription page
 ardalis --version  # Check version
 ```
 
