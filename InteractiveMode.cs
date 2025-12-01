@@ -14,7 +14,7 @@ public static class InteractiveMode
         var postHog = services.GetRequiredService<PostHogService>();
 
         AnsiConsole.MarkupLine("[bold deepskyblue3]Interactive Mode[/]");
-        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, pluralsight, quote, recent, repos, speaker, subscribe, tips, youtube). Press Ctrl+C or type 'exit' to quit.[/]");
+        AnsiConsole.MarkupLine("[dim]Enter commands (blog, bluesky, books, card, contact, courses, dometrain, linkedin, nimblepros, packages, pluralsight, quote, recent, repos, speaker, subscribe, tip, youtube). Press Ctrl+C or type 'exit' to quit.[/]");
         AnsiConsole.MarkupLine("[dim]Note: Some commands like 'dotnetconf-score' require arguments and must be run from the command line.[/]\n");
 
         while (true)
@@ -88,8 +88,8 @@ public static class InteractiveMode
                         await new BooksCommand(postHog).ExecuteAsync(null!, new BooksCommand.Settings());
                         break;
 
-                    case "tips":
-                        await new TipsCommand(postHog).ExecuteAsync(null!);
+                    case "tip":
+                        await new TipCommand(postHog).ExecuteAsync(null!);
                         break;
 
                     case "courses":
@@ -124,7 +124,7 @@ public static class InteractiveMode
                         AnsiConsole.MarkupLine("  [deepskyblue3]quote[/]   - Display random quote");
                         AnsiConsole.MarkupLine("  [deepskyblue3]recent[/]  - Display recent activity");
                         AnsiConsole.MarkupLine("  [deepskyblue3]repos[/]   - Display popular GitHub repositories");
-                        AnsiConsole.MarkupLine("  [deepskyblue3]tips[/]    - Display a random coding tip");
+                        AnsiConsole.MarkupLine("  [deepskyblue3]tip[/]    - Display a random coding tip");
                         AnsiConsole.WriteLine();
                         AnsiConsole.MarkupLine("[bold]Open Commands:[/]");
                         AnsiConsole.MarkupLine("  [deepskyblue3]blog[/]    - Open blog");

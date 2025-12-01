@@ -106,7 +106,7 @@ dnx ardalis recent --verbose
 Display a random coding tip:
 
 ```bash
-dnx ardalis tips
+dnx ardalis tip
 ```
 
 Display available courses:

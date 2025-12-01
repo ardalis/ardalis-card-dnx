@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Ardalis.Commands;
 
-public class TipsCommand : AsyncCommand
+public class TipCommand : AsyncCommand
 {
     private readonly PostHogService _postHog;
 
-    public TipsCommand(PostHogService postHog)
+    public TipCommand(PostHogService postHog)
     {
         _postHog = postHog;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken = default)
     {
-        _postHog.TrackCommand("tips");
+        _postHog.TrackCommand("tip");
         var tip = await TipHelper.GetRandomTip();
 
         // Add UTM tracking to the URL but display without query string
