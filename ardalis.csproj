@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.18.0</Version>
-    <ReleaseNotes>Added dotnetconf-score [year] command.</ReleaseNotes>
+    <Version>1.19.0</Version>
+    <ReleaseNotes>Updated to use TimeWarp.Nuru and routes and command pipelines Thanks @StevenTCramer!.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
   </PropertyGroup>
 
