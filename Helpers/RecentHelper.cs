@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Spectre.Console;
+using TimeWarp.Nuru;
 
 namespace Ardalis.Helpers;
 
@@ -51,6 +51,7 @@ public static class RecentHelper
 
     private static async Task<List<RecentActivity>> GetRecentActivitiesWithVerboseAsync()
     {
+        ITerminal terminal = NuruTerminal.Default;
         var allActivities = new List<RecentActivity>();
 
         // Process each source and display results
@@ -66,11 +67,11 @@ public static class RecentHelper
                 {
                     allActivities.AddRange(activities);
                     var resultText = activities.Count == 1 ? "result" : "results";
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ✅ {activities.Count} {resultText} found![/]");
+                    terminal.WriteLine($"{displayName}... ✅ {activities.Count} {resultText} found!".Gray());
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ⚠️ No results found[/]");
+                    terminal.WriteLine($"{displayName}... ⚠️ No results found".Gray());
                 }
             }
             catch (Exception ex)
@@ -80,37 +81,37 @@ public static class RecentHelper
                 var errorMessage = ex.Message;
                 
                 // Try to extract HTTP status code if it's an HttpRequestException
-                if (ex is HttpRequestException httpEx)
+                if (ex is HttpRequestException)
                 {
                     if (errorMessage.Contains("404"))
                     {
-                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 404![/]");
+                        terminal.WriteLine($"{displayName}... ❌ Request returned 404!".Gray());
                     }
                     else if (errorMessage.Contains("403"))
                     {
-                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 403 (Forbidden)![/]");
+                        terminal.WriteLine($"{displayName}... ❌ Request returned 403 (Forbidden)!".Gray());
                     }
                     else if (errorMessage.Contains("500"))
                     {
-                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request returned 500 (Server Error)![/]");
+                        terminal.WriteLine($"{displayName}... ❌ Request returned 500 (Server Error)!".Gray());
                     }
                     else
                     {
-                        AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request failed: {errorType}![/]");
+                        terminal.WriteLine($"{displayName}... ❌ Request failed: {errorType}!".Gray());
                     }
                 }
                 else if (ex is TaskCanceledException)
                 {
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Request timed out![/]");
+                    terminal.WriteLine($"{displayName}... ❌ Request timed out!".Gray());
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"[grey]{displayName}... ❌ Error: {errorType}![/]");
+                    terminal.WriteLine($"{displayName}... ❌ Error: {errorType}!".Gray());
                 }
             }
         }
 
-        AnsiConsole.WriteLine();
+        terminal.WriteLine();
         
         // Sort by date (most recent first) and take top 5
         return allActivities

@@ -18,6 +18,8 @@ This is Phase 7a of the TimeWarp.Nuru migration.
 
 `Spectre.Console.ImageSharp` should already be removed in task 002.
 
+**DEPENDENCY**: This task requires tasks 017 and 018 to be completed first (delete legacy command files and infrastructure).
+
 File to modify:
 - `ardalis.csproj`
 
