@@ -67,7 +67,8 @@ public class Program
 
             // ========================================
             // Commands with Options
-            // Using two routes per command: one default, one with flag
+            // Note: Using two routes per command because invoking a command
+            // with optional flags but no arguments shows usage in Nuru
             // ========================================
             .Map("packages", async () => await PackagesHandler.ExecuteAsync(false, 10), "Display popular Ardalis NuGet packages")
             .Map("packages --all", async () => await PackagesHandler.ExecuteAsync(true, 10), "Display all NuGet packages")
