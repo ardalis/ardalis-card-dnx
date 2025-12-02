@@ -6,12 +6,12 @@ Delete TypeRegistrar, InteractiveMode, and other legacy files no longer needed w
 
 ## Todo List
 
-- [ ] Delete `Infrastructure/TypeRegistrar.cs`
-- [ ] Delete `Infrastructure/` directory (if empty)
-- [ ] Delete `InteractiveMode.cs`
-- [ ] Delete `Helpers/PagingHelper.cs` (if no longer needed)
-- [ ] Delete `Program.Spectre.cs.bak`
-- [ ] Verify `dotnet build` succeeds
+- [x] Delete `Infrastructure/TypeRegistrar.cs`
+- [x] Delete `Infrastructure/` directory (if empty)
+- [x] Delete `InteractiveMode.cs` (done in task 017)
+- [x] Delete `Helpers/PagingHelper.cs` (done in task 017)
+- [ ] Keep `Program.Spectre.cs.bak` (for reference)
+- [x] Verify `dotnet build` succeeds
 
 ## Notes
 
@@ -32,3 +32,8 @@ Reference: `.agent/workspace/2025-12-02T16-30-00_timewarp-nuru-migration-plan.md
 
 ## Results
 
+- Deleted `Infrastructure/TypeRegistrar.cs` (Spectre.Console.Cli DI registrar)
+- Deleted `Infrastructure/` directory
+- `InteractiveMode.cs` and `PagingHelper.cs` already deleted in task 017
+- Kept `Program.Spectre.cs.bak` for reference
+- Build succeeds with 0 warnings, 0 errors
