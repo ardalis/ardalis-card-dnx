@@ -38,7 +38,7 @@
     <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
     <PackageReference Include="Spectre.Console" Version="0.53.0" />
     <PackageReference Include="Spectre.Console.Extensions.Logging" Version="0.2.1" />
-    <PackageReference Include="Spectre.Console.ImageSharp" Version="0.53.0" />
+
     <PackageReference Include="TimeWarp.Nuru" Version="3.0.0-beta.11" />
   </ItemGroup>
 

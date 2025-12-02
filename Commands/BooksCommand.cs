@@ -5,7 +5,6 @@ using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -26,10 +25,6 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
 
     public class Settings : CommandSettings
     {
-        [CommandOption("--with-covers")]
-        [Description("Display book cover images")]
-        public bool WithCovers { get; set; }
-
         [CommandOption("--no-paging")]
         [Description("Disable paging")]
         public bool NoPaging { get; set; }
@@ -84,7 +79,7 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
         // Display books with paging
         PagingHelper.DisplayWithPaging(
             sortedBooks,
-            async book => await DisplayBook(book, settings.WithCovers),
+            DisplayBook,
             pageSize: settings.PageSize,
             enablePaging: !settings.NoPaging
         );
@@ -121,27 +116,8 @@ public class BooksCommand : AsyncCommand<BooksCommand.Settings>
         };
     }
 
-    private static async Task DisplayBook(Book book, bool withCovers)
+    private static void DisplayBook(Book book)
     {
-        // Display cover image if requested and available
-        if (withCovers && !string.IsNullOrEmpty(book.CoverImage))
-        {
-            try
-            {
-                var imageBytes = await _httpClient.GetByteArrayAsync(book.CoverImage);
-                using var imageStream = new MemoryStream(imageBytes);
-                var image = new CanvasImage(imageStream);
-                image.MaxWidth = 16; // Limit width for better terminal display
-                AnsiConsole.Write(image);
-                AnsiConsole.WriteLine();
-            }
-            catch
-            {
-                // If image fails to load, just continue without it
-                AnsiConsole.MarkupLine("[dim]📖 (Cover image unavailable)[/]");
-            }
-        }
-
         var urlWithTracking = UrlHelper.AddUtmSource(book.Link);
         var displayUrl = UrlHelper.StripQueryString(book.Link);
 
