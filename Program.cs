@@ -67,20 +67,27 @@ public class Program
 
             // ========================================
             // Commands with Options
-            // Note: Using two routes because auto-generated --help routes
-            // match before optional flag routes (see debug logs for details)
             // ========================================
-            .Map("packages", async () => await PackagesHandler.ExecuteAsync(false, 10), "Display popular Ardalis NuGet packages")
-            .Map("packages --all", async () => await PackagesHandler.ExecuteAsync(true, 10), "Display all NuGet packages")
-
-            .Map("books", async () => await BooksHandler.ExecuteAsync(false, 10), "Display published books by Ardalis")
-            .Map("books --no-paging", async () => await BooksHandler.ExecuteAsync(true, 10), "Display all books without paging")
-
-            .Map("courses", async () => await CoursesHandler.ExecuteAsync(false, 10), "Display available courses")
-            .Map("courses --all", async () => await CoursesHandler.ExecuteAsync(true, 10), "Display all courses")
-
-            .Map("recent", async () => await RecentHandler.ExecuteAsync(false), "Display recent activity from Ardalis")
-            .Map("recent --verbose", async () => await RecentHandler.ExecuteAsync(true), "Display recent activity with details")
+            .Map(
+                "packages --all? --page-size? {size:int?}",
+                async (bool all, int? size) => await PackagesHandler.ExecuteAsync(all, size ?? 10),
+                "Display popular Ardalis NuGet packages"
+            )
+            .Map(
+                "books --no-paging? --page-size? {size:int?}",
+                async (bool noPaging, int? size) => await BooksHandler.ExecuteAsync(noPaging, size ?? 10),
+                "Display published books by Ardalis"
+            )
+            .Map(
+                "courses --all? --page-size? {size:int?}",
+                async (bool all, int? size) => await CoursesHandler.ExecuteAsync(all, size ?? 10),
+                "Display available courses"
+            )
+            .Map(
+                "recent --verbose?",
+                async (bool verbose) => await RecentHandler.ExecuteAsync(verbose),
+                "Display recent activity from Ardalis"
+            )
 
             // ========================================
             // Commands with Arguments
