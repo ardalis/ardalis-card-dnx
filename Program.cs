@@ -112,9 +112,8 @@ public class Program
                 "courses --all? --page-size? {size:int?}",
                 "Display available courses"
             )
-            .Map(
+            .Map<RecentCommand>(
                 "recent --verbose?",
-                async (bool verbose) => await RecentHandler.ExecuteAsync(verbose),
                 "Display recent activity from Ardalis"
             )
 
