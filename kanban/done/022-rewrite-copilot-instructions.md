@@ -6,13 +6,25 @@ Complete rewrite of `.github/copilot-instructions.md` to document the current Ti
 
 ## Todo List
 
-- [ ] Update Project Overview (line 5) - change Spectre.Console.Cli to TimeWarp.Nuru
-- [ ] Rewrite Architecture Patterns section (lines 13-41) for route-based handlers
-- [ ] Update fallback examples with correct class names (lines 43-51)
-- [ ] Remove RecentHelper reference - was deleted in PR #56 (lines 53-57)
-- [ ] Rewrite "Adding a New Command" steps for Nuru pattern (lines 67-71)
-- [ ] Replace Spectre.Console Conventions with Nuru API patterns (lines 94-119)
-- [ ] Update namespace example from `Ardalis.Commands` to `Ardalis.Cli.Handlers` (line 124)
+- [x] Update Project Overview (line 5) - change Spectre.Console.Cli to TimeWarp.Nuru
+- [x] Rewrite Architecture Patterns section (lines 13-41) for route-based handlers
+- [x] Update fallback examples with correct class names (lines 43-51)
+- [x] Remove RecentHelper reference - was deleted in PR #56 (lines 53-57)
+- [x] Rewrite "Adding a New Command" steps for Nuru pattern (lines 67-71)
+- [x] Replace Spectre.Console Conventions with Nuru API patterns (lines 94-119)
+- [x] Update namespace example from `Ardalis.Commands` to `Ardalis.Cli.Handlers` (line 124)
+
+## Results
+
+Complete rewrite of copilot-instructions.md:
+- Updated project overview to reference TimeWarp.Nuru
+- Documented route-based architecture with `.Map()` API examples
+- Added handler pattern with static classes and methods
+- Documented Nuru terminal API (ITerminal, WritePanel, WriteTable, fluent styling)
+- Updated "Adding a New Command" to 3-step process
+- Added route pattern syntax reference
+- Removed all Spectre.Console references and markup syntax
+- Updated namespace to `Ardalis.Cli.Handlers`
 
 ## Notes
 
