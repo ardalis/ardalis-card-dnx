@@ -69,6 +69,18 @@ Open Ardalis's Pluralsight profile:
 dnx ardalis pluralsight
 ```
 
+Open Ardalis's GitHub profile:
+
+```bash
+dnx ardalis github
+```
+
+Open Ardalis's NuGet profile:
+
+```bash
+dnx ardalis nuget
+```
+
 Open Ardalis's newsletter subscription page:
 
 ```bash
@@ -249,6 +261,8 @@ ardalis youtube    # Open YouTube channel
 ardalis bluesky    # Open Bluesky profile
 ardalis linkedin   # Open LinkedIn profile
 ardalis pluralsight # Open Pluralsight profile
+ardalis github     # Open GitHub profile
+ardalis nuget      # Open NuGet profile
 ardalis quote      # Display random quote
 ardalis tip        # Display random coding tip
 ardalis repos      # Display popular GitHub repositories

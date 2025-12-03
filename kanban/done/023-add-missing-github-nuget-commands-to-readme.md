@@ -6,10 +6,16 @@ Add documentation for the `github` and `nuget` commands which exist in Program.c
 
 ## Todo List
 
-- [ ] Add `github` command to Quick Start section (after `pluralsight`)
-- [ ] Add `nuget` command to Quick Start section (after `github`)
-- [ ] Add `github` command to Permanent Installation examples
-- [ ] Add `nuget` command to Permanent Installation examples
+- [x] Add `github` command to Quick Start section (after `pluralsight`)
+- [x] Add `nuget` command to Quick Start section (after `github`)
+- [x] Add `github` command to Permanent Installation examples
+- [x] Add `nuget` command to Permanent Installation examples
+
+## Results
+
+Added both missing commands to README.md:
+- Quick Start section: Added after pluralsight, before subscribe
+- Permanent Installation: Added after pluralsight, before quote
 
 ## Notes
 
