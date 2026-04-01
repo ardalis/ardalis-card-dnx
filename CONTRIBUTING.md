@@ -37,6 +37,12 @@ This project uses GitHub Actions to automatically publish to NuGet.org when a ne
 
 **Note**: Creating the release will automatically create the tag, so you don't need to create and push tags separately. This prevents duplicate workflow runs.
 
+**Also Note**: You can use the `gh` CLI to create releases locally instead of via the github web app:
+
+```bash
+gh release create v1.21.0 --title "v1.21.0" --notes "Migrated all commands to TimeWarp.Nuru Endpoint DSL (class-based, attribute-driven). Replaced Handlers/ with Endpoints/ using [NuruRoute], IQuery/ICommand interfaces, and IQueryHandler/ICommandHandler. Added named HTTP clients for resilient API fetching with hardcoded fallbacks. Updated PostHog behavior to INuruBehavior. Thanks @StevenTCramer!" --repo ardalis/ardalis-card-dnx
+```
+
 #### Manual Publishing (Alternative)
 
 If you need to publish manually:
