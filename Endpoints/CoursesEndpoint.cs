@@ -7,28 +7,29 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Mediator;
-using Microsoft.Extensions.Logging;
 using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 using static Ardalis.Cli.Urls;
 using static Ardalis.Helpers.UrlHelper;
 
-namespace Ardalis.Cli.Handlers;
+namespace Ardalis.Cli.Endpoints;
 
 /// <summary>
 /// Displays available courses using Nuru panel widget with paging support.
 /// Courses are grouped by platform (Pluralsight, Dometrain, etc.).
 /// </summary>
-public sealed class CoursesCommand : IRequest
+[NuruRoute("courses", Description = "Display available courses")]
+public sealed class CoursesEndpoint : IQuery<Unit>
 {
-    public bool All { get; init; }
-    public int? Size { get; init; }
+    [Option("all", "a", Description = "Show all courses without paging")]
+    public bool All { get; set; }
 
-    public sealed class Handler : IRequestHandler<CoursesCommand>
+    [Option("pagesize", "p", Description = "Number of courses per page")]
+    public int? PageSize { get; set; }
+
+    public sealed class Handler(
+        IHttpClientFactory httpClientFactory) : IQueryHandler<CoursesEndpoint, Unit>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<Handler> _logger;
-
         private static readonly Course[] FallbackCourses =
         [
             new Course
@@ -47,19 +48,9 @@ public sealed class CoursesCommand : IRequest
             }
         ];
 
-        public Handler(
-            IHttpClientFactory httpClientFactory,
-            ILogger<Handler> logger)
+        public async ValueTask<Unit> Handle(CoursesEndpoint query, CancellationToken ct)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
-
-        public async ValueTask<Unit> Handle(
-            CoursesCommand request,
-            CancellationToken cancellationToken)
-        {
-            ITerminal terminal = NuruTerminal.Default;
+            ITerminal terminal = TimeWarpTerminal.Default;
 
             terminal.WriteLine("Ardalis's Available Courses".Green().Bold());
             terminal.WriteLine();
@@ -68,11 +59,11 @@ public sealed class CoursesCommand : IRequest
 
             try
             {
-                courses = await FetchCoursesFromUrlAsync(cancellationToken);
+                courses = await FetchCoursesFromUrlAsync(ct);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogWarning(ex, "Failed to fetch courses from API, using fallback");
+                // Use fallback
                 terminal.WriteLine("Using fallback course list...".Gray());
                 terminal.WriteLine();
                 courses = [.. FallbackCourses];
@@ -81,7 +72,7 @@ public sealed class CoursesCommand : IRequest
             if (courses.Count == 0)
             {
                 terminal.WriteLine("No courses available at the moment.".Yellow());
-                return Unit.Value;
+                return default;
             }
 
             // Group courses by platform and flatten for display
@@ -91,16 +82,16 @@ public sealed class CoursesCommand : IRequest
                 .SelectMany(g => g.Select(c => (g.Key, c)))
                 .ToList();
 
-            int pageSize = request.Size ?? 10;
+            int pageSize = query.PageSize ?? 10;
 
-            if (request.All)
+            if (query.All)
             {
                 // Display all courses without paging
                 string? currentPlatform = null;
                 foreach ((string platform, Course course) in allCoursesToDisplay)
                 {
-                    DisplayPlatformHeaderIfChanged(terminal, platform, ref currentPlatform);
-                    DisplayCourse(terminal, course);
+                    DisplayPlatformHeaderIfChanged(platform, ref currentPlatform);
+                    DisplayCourse(course);
                 }
             }
             else
@@ -119,8 +110,8 @@ public sealed class CoursesCommand : IRequest
 
                     foreach ((string platform, Course course) in pageCourses)
                     {
-                        DisplayPlatformHeaderIfChanged(terminal, platform, ref currentPlatform);
-                        DisplayCourse(terminal, course);
+                        DisplayPlatformHeaderIfChanged(platform, ref currentPlatform);
+                        DisplayCourse(course);
                     }
 
                     currentIndex = endIndex;
@@ -148,11 +139,12 @@ public sealed class CoursesCommand : IRequest
             string coursesUrl = AddUtmSource(Courses);
             terminal.WriteLine("Learn more at: ".Gray() + Courses.Link(coursesUrl).Cyan());
 
-            return Unit.Value;
+            return default;
         }
 
-        private static void DisplayPlatformHeaderIfChanged(ITerminal terminal, string platform, ref string? currentPlatform)
+        private static void DisplayPlatformHeaderIfChanged(string platform, ref string? currentPlatform)
         {
+            var terminal = TimeWarpTerminal.Default;
             if (currentPlatform != platform)
             {
                 if (currentPlatform != null)
@@ -165,8 +157,9 @@ public sealed class CoursesCommand : IRequest
             }
         }
 
-        private static void DisplayCourse(ITerminal terminal, Course course)
+        private static void DisplayCourse(Course course)
         {
+            var terminal = TimeWarpTerminal.Default;
             string urlWithTracking = AddUtmSource(course.Link);
             string displayUrl = StripQueryString(course.Link);
 
@@ -188,12 +181,12 @@ public sealed class CoursesCommand : IRequest
             terminal.WriteLine();
         }
 
-        private async Task<List<Course>> FetchCoursesFromUrlAsync(CancellationToken cancellationToken)
+        private async Task<List<Course>> FetchCoursesFromUrlAsync(CancellationToken ct)
         {
-            HttpClient client = _httpClientFactory.CreateClient("ArdalisWeb");
+            HttpClient client = httpClientFactory.CreateClient("ArdalisWeb");
             List<Course>? courses = await client.GetFromJsonAsync<List<Course>>(
                 "https://ardalis.com/courses.json",
-                cancellationToken);
+                ct);
             return courses ?? [];
         }
     }

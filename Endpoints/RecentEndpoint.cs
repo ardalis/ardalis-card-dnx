@@ -7,25 +7,25 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Mediator;
-using Microsoft.Extensions.Logging;
+
 using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 using static Ardalis.Helpers.UrlHelper;
 
-namespace Ardalis.Cli.Handlers;
+namespace Ardalis.Cli.Endpoints;
 
 /// <summary>
 /// Displays recent activity from various sources using Nuru table widget.
 /// </summary>
-public sealed class RecentCommand : IRequest
+[NuruRoute("recent", Description = "Display recent activity from Ardalis")]
+public sealed class RecentEndpoint : IQuery<Unit>
 {
-    public bool Verbose { get; init; }
+    [Option("verbose", "v", Description = "Show verbose output with fetch progress")]
+    public bool Verbose { get; set; }
 
-    public sealed class Handler : IRequestHandler<RecentCommand>
+    public sealed class Handler(
+        IHttpClientFactory httpClientFactory) : IQueryHandler<RecentEndpoint, Unit>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<Handler> _logger;
-
         private static readonly List<(string Name, string Icon, string Url, Func<XDocument, List<RecentActivity>> Parser)> Sources =
         [
             ("Blog", "📝", "https://ardalis.com/rss", ParseBlogRss),
@@ -34,53 +34,42 @@ public sealed class RecentCommand : IRequest
             ("Bluesky", "🦋", "https://bsky.app/profile/ardalis.com/rss", ParseBlueskyRss)
         ];
 
-        public Handler(
-            IHttpClientFactory httpClientFactory,
-            ILogger<Handler> logger)
+        public async ValueTask<Unit> Handle(RecentEndpoint query, CancellationToken ct)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
-
-        public async ValueTask<Unit> Handle(
-            RecentCommand request,
-            CancellationToken cancellationToken)
-        {
-            ITerminal terminal = NuruTerminal.Default;
+            ITerminal terminal = TimeWarpTerminal.Default;
 
             terminal.WriteLine("Fetching recent activity...".Bold());
             terminal.WriteLine();
 
-            List<RecentActivity> activities = request.Verbose
-                ? await GetRecentActivitiesWithVerboseAsync(terminal, cancellationToken)
-                : await GetRecentActivitiesAsync(cancellationToken);
+            List<RecentActivity> activities = query.Verbose
+                ? await GetRecentActivitiesWithVerboseAsync(ct)
+                : await GetRecentActivitiesAsync(ct);
 
             if (activities.Count == 0)
             {
                 terminal.WriteLine("No recent activities found.".Yellow());
-                return Unit.Value;
+                return default;
             }
 
-            DisplayTable(terminal, activities);
+            DisplayTable(activities);
 
-            return Unit.Value;
+            return default;
         }
 
-        private async Task<List<RecentActivity>> GetRecentActivitiesAsync(CancellationToken cancellationToken)
+        private async Task<List<RecentActivity>> GetRecentActivitiesAsync(CancellationToken ct)
         {
-            HttpClient client = _httpClientFactory.CreateClient("RssFeed");
+            HttpClient client = httpClientFactory.CreateClient("RssFeed");
 
             var tasks = Sources.Select(async source =>
             {
                 try
                 {
-                    string response = await client.GetStringAsync(source.Url, cancellationToken);
+                    string response = await client.GetStringAsync(source.Url, ct);
                     XDocument doc = XDocument.Parse(response);
                     return source.Parser(doc);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    _logger.LogWarning(ex, "Failed to fetch {SourceName}", source.Name);
                     return new List<RecentActivity>();
                 }
             }).ToArray();
@@ -95,10 +84,10 @@ public sealed class RecentCommand : IRequest
         }
 
         private async Task<List<RecentActivity>> GetRecentActivitiesWithVerboseAsync(
-            ITerminal terminal,
-            CancellationToken cancellationToken)
+            CancellationToken ct)
         {
-            HttpClient client = _httpClientFactory.CreateClient("RssFeed");
+            var terminal = TimeWarpTerminal.Default;
+            HttpClient client = httpClientFactory.CreateClient("RssFeed");
             var allActivities = new List<RecentActivity>();
 
             foreach (var source in Sources)
@@ -107,7 +96,7 @@ public sealed class RecentCommand : IRequest
 
                 try
                 {
-                    string response = await client.GetStringAsync(source.Url, cancellationToken);
+                    string response = await client.GetStringAsync(source.Url, ct);
                     XDocument doc = XDocument.Parse(response);
                     List<RecentActivity> activities = source.Parser(doc);
 
@@ -134,18 +123,15 @@ public sealed class RecentCommand : IRequest
                     else
                         terminal.WriteLine($"{displayName}... ❌ Request failed: HttpRequestException!".Gray());
 
-                    _logger.LogWarning(ex, "Failed to fetch {SourceName}", source.Name);
                 }
-                catch (TaskCanceledException ex)
+                catch (TaskCanceledException)
                 {
                     terminal.WriteLine($"{displayName}... ❌ Request timed out!".Gray());
-                    _logger.LogWarning(ex, "Timeout fetching {SourceName}", source.Name);
                 }
                 catch (Exception ex)
                 {
                     string errorType = ex.GetType().Name;
                     terminal.WriteLine($"{displayName}... ❌ Error: {errorType}!".Gray());
-                    _logger.LogWarning(ex, "Failed to fetch {SourceName}", source.Name);
                 }
             }
 
@@ -245,30 +231,32 @@ public sealed class RecentCommand : IRequest
             return DateTime.MinValue;
         }
 
-        private static void DisplayTable(ITerminal terminal, List<RecentActivity> activities)
+        private static void DisplayTable(List<RecentActivity> activities)
         {
-            Table table = new Table()
-                .AddColumn("Source", Alignment.Center)
-                .AddColumn("Activity", Alignment.Left)
-                .AddColumn("When", Alignment.Right)
-                .AddColumn("Link", Alignment.Center);
+            var terminal = TimeWarpTerminal.Default;
 
-            table.Border = BorderStyle.Rounded;
-
-            foreach (RecentActivity activity in activities)
+            terminal.WriteTable(table =>
             {
-                string truncatedTitle = activity.GetTruncatedTitle(60);
-                string sourceWithIcon = $"{activity.Icon} {activity.Source}";
-                string when = activity.GetRelativeTimeString();
+                table
+                    .AddColumn("Source", Alignment.Center)
+                    .AddColumn("Activity", Alignment.Left)
+                    .AddColumn("When", Alignment.Right)
+                    .AddColumn("Link", Alignment.Center)
+                    .Border(BorderStyle.Rounded);
 
-                // Add UTM tracking to URL
-                string urlWithTracking = AddUtmSource(activity.Url);
-                string link = "Click for details".Link(urlWithTracking).Cyan();
+                foreach (RecentActivity activity in activities)
+                {
+                    string truncatedTitle = activity.GetTruncatedTitle(60);
+                    string sourceWithIcon = $"{activity.Icon} {activity.Source}";
+                    string when = activity.GetRelativeTimeString();
 
-                table.AddRow(sourceWithIcon, truncatedTitle, when, link);
-            }
+                    // Add UTM tracking to URL
+                    string urlWithTracking = AddUtmSource(activity.Url);
+                    string link = "Click for details".Link(urlWithTracking).Cyan();
 
-            terminal.WriteTable(table);
+                    table.AddRow(sourceWithIcon, truncatedTitle, when, link);
+                }
+            });
         }
     }
 

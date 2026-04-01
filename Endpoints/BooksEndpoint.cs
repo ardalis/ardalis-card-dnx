@@ -8,27 +8,28 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Mediator;
-using Microsoft.Extensions.Logging;
 using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 using static Ardalis.Cli.Urls;
 using static Ardalis.Helpers.UrlHelper;
 
-namespace Ardalis.Cli.Handlers;
+namespace Ardalis.Cli.Endpoints;
 
 /// <summary>
 /// Displays published books using Nuru panel widget with paging support.
 /// </summary>
-public sealed class BooksCommand : IRequest
+[NuruRoute("books", Description = "Display published books by Ardalis")]
+public sealed class BooksEndpoint : IQuery<Unit>
 {
-    public bool NoPaging { get; init; }
-    public int? Size { get; init; }
+    [Option("nopaging", "n", Description = "Display all books without paging")]
+    public bool NoPaging { get; set; }
 
-    public sealed class Handler : IRequestHandler<BooksCommand>
+    [Option("pagesize", "p", Description = "Number of books per page")]
+    public int? PageSize { get; set; }
+
+    public sealed class Handler(
+        IHttpClientFactory httpClientFactory) : IQueryHandler<BooksEndpoint, Unit>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<Handler> _logger;
-
         private static readonly BookInfo[] FallbackBooks =
         [
             new BookInfo
@@ -42,19 +43,9 @@ public sealed class BooksCommand : IRequest
             }
         ];
 
-        public Handler(
-            IHttpClientFactory httpClientFactory,
-            ILogger<Handler> logger)
+        public async ValueTask<Unit> Handle(BooksEndpoint query, CancellationToken ct)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
-
-        public async ValueTask<Unit> Handle(
-            BooksCommand request,
-            CancellationToken cancellationToken)
-        {
-            ITerminal terminal = NuruTerminal.Default;
+            ITerminal terminal = TimeWarpTerminal.Default;
 
             terminal.WriteLine("Ardalis's Published Books".Blue().Bold());
             terminal.WriteLine();
@@ -63,11 +54,11 @@ public sealed class BooksCommand : IRequest
 
             try
             {
-                books = await FetchBooksFromUrlAsync(cancellationToken);
+                books = await FetchBooksFromUrlAsync(ct);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogWarning(ex, "Failed to fetch books from API, using fallback");
+                // Use fallback
                 terminal.WriteLine("Using fallback book list...".Gray());
                 terminal.WriteLine();
                 books = [.. FallbackBooks];
@@ -76,7 +67,7 @@ public sealed class BooksCommand : IRequest
             if (books.Count == 0)
             {
                 terminal.WriteLine("No books available at the moment.".Yellow());
-                return Unit.Value;
+                return default;
             }
 
             // Sort books by publication date (most recent first)
@@ -84,14 +75,14 @@ public sealed class BooksCommand : IRequest
                 .OrderByDescending(b => ParsePublicationYear(b.PublicationDate))
                 .ToList();
 
-            int pageSize = request.Size ?? 10;
+            int pageSize = query.PageSize ?? 10;
 
-            if (request.NoPaging)
+            if (query.NoPaging)
             {
                 // Display all books without paging
                 foreach (BookInfo book in sortedBooks)
                 {
-                    DisplayBook(terminal, book);
+                    DisplayBook(book);
                 }
             }
             else
@@ -106,7 +97,7 @@ public sealed class BooksCommand : IRequest
 
                     foreach (BookInfo book in pageBooks)
                     {
-                        DisplayBook(terminal, book);
+                        DisplayBook(book);
                     }
 
                     currentIndex = endIndex;
@@ -133,11 +124,12 @@ public sealed class BooksCommand : IRequest
             terminal.WriteLine();
             terminal.WriteLine("Learn more at: ".Gray() + Books.Link(Books).Cyan());
 
-            return Unit.Value;
+            return default;
         }
 
-        private static void DisplayBook(ITerminal terminal, BookInfo book)
+        private static void DisplayBook(BookInfo book)
         {
+            var terminal = TimeWarpTerminal.Default;
             string urlWithTracking = AddUtmSource(book.Link);
             string displayUrl = StripQueryString(book.Link);
 
@@ -169,12 +161,12 @@ public sealed class BooksCommand : IRequest
             terminal.WriteLine();
         }
 
-        private async Task<List<BookInfo>> FetchBooksFromUrlAsync(CancellationToken cancellationToken)
+        private async Task<List<BookInfo>> FetchBooksFromUrlAsync(CancellationToken ct)
         {
-            HttpClient client = _httpClientFactory.CreateClient("ArdalisWeb");
+            HttpClient client = httpClientFactory.CreateClient("ArdalisWeb");
             List<BookInfo>? books = await client.GetFromJsonAsync<List<BookInfo>>(
                 "https://ardalis.com/books.json",
-                cancellationToken);
+                ct);
             return books ?? [];
         }
 
