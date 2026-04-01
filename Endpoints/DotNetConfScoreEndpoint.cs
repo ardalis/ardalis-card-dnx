@@ -1,8 +1,10 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -17,11 +19,14 @@ namespace Ardalis.Cli.Endpoints;
 /// <summary>
 /// Displays top videos from .NET Conf playlists using Nuru table widget.
 /// </summary>
-[NuruRoute("dotnetconf-score", Description = "Display top videos from .NET Conf playlists")]
+[NuruRoute("dotnetconf-score", Description = "Display top videos from .NET Conf playlists. Use --output <file.md> to save results as a markdown file.")]
 public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 {
     [Parameter(Description = "Year to display scores for")]
     public int? Year { get; set; }
+
+    [Option("output", "o", Description = "Write output to a markdown file (e.g. output.md)")]
+    public string? Output { get; set; }
 
     public sealed class Handler(
         IHttpClientFactory httpClientFactory) : IQueryHandler<DotNetConfScoreEndpoint, Unit>
@@ -78,8 +83,16 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
                     return default;
                 }
 
-                // Display in a table
-                DisplayVideosTable(topVideos, highlightVideoIds);
+                // Display in a table or write to markdown file
+                if (!string.IsNullOrWhiteSpace(query.Output))
+                {
+                    WriteMarkdownFile(topVideos, highlightVideoIds, year, query.Output);
+                    terminal.WriteLine($"Markdown written to: {query.Output}".Green());
+                }
+                else
+                {
+                    DisplayVideosTable(topVideos, highlightVideoIds);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -115,6 +128,31 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
                 PropertyNameCaseInsensitive = true
             });
             return playlists ?? [];
+        }
+
+        private static void WriteMarkdownFile(List<VideoDetails> videos, HashSet<string> highlightVideoIds, int year, string filePath)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"# .NET Conf {year} - Top Videos by Views");
+            sb.AppendLine();
+            sb.AppendLine("| Rank | Title | Views |");
+            sb.AppendLine("|:----:|:------|------:|");
+
+            int rank = 1;
+            foreach (VideoDetails video in videos)
+            {
+                bool isHighlighted = highlightVideoIds.Contains(video.Id);
+                string title = video.Title.Length > 80 ? video.Title[..77] + "..." : video.Title;
+                string views = video.ViewCount.ToString("N0");
+                string prefix = isHighlighted ? "⭐ " : string.Empty;
+                sb.AppendLine($"| {rank} | {prefix}[{title}]({video.Url}) | {views} |");
+                rank++;
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("*⭐ indicates Ardalis's video*");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
         }
 
         private static void DisplayVideosTable(List<VideoDetails> videos, HashSet<string> highlightVideoIds)

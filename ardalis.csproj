@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.22.0</Version>
-    <ReleaseNotes>Re-enabled PostHog telemetry behavior. Worked around a Nuru beta.68 generator bug where behavior constructor DI params were not resolved via MS DI service provider. PostHogNuruBehavior is now self-contained with lazy initialization. Fixed Main return type (Task&lt;Unit&gt; -> Task&lt;int&gt;).</ReleaseNotes>
+    <Version>1.23.0</Version>
+    <ReleaseNotes>Added --output/-o option to dotnetconf-score command to export results as a markdown file.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
