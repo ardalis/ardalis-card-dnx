@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.20.0</Version>
-    <ReleaseNotes>Updated to use TimeWarp.Nuru and routes and command pipelines Thanks @StevenTCramer!.</ReleaseNotes>
+    <Version>1.21.0</Version>
+    <ReleaseNotes>Migrated all commands to TimeWarp.Nuru Endpoint DSL (class-based, attribute-driven). Replaced Handlers/ with Endpoints/ using [NuruRoute], IQuery/ICommand interfaces, and IQueryHandler/ICommandHandler. Added named HTTP clients for resilient API fetching with hardcoded fallbacks. Updated PostHog behavior to INuruBehavior. Thanks @StevenTCramer!</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
