@@ -147,6 +147,9 @@ Display top videos from .NET Conf playlists:
 dnx ardalis dotnetconf-score 2025
 # or other years: 2024, 2023, 2022, 2021
 dnx ardalis dotnetconf-score 2024
+# save results as a markdown file
+dnx ardalis dotnetconf-score 2025 --output results.md
+dnx ardalis dotnetconf-score 2024 -o output.md
 ```
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
