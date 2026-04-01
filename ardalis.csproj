@@ -19,6 +19,7 @@
     <Version>1.20.0</Version>
     <ReleaseNotes>Updated to use TimeWarp.Nuru and routes and command pipelines Thanks @StevenTCramer!.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,17 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mediator.Abstractions" Version="3.0.2" />
-    <PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
     <PackageReference Include="PostHog.AspNetCore" Version="2.4.1" />
-    <PackageReference Include="TimeWarp.Nuru" Version="3.0.0-beta.19" />
+    <PackageReference Include="TimeWarp.Nuru" Version="3.0.0-beta.68" />
   </ItemGroup>
 
 </Project>

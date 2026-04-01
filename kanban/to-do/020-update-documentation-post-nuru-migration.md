@@ -8,31 +8,31 @@ Update all documentation to reflect the Spectre.Console to TimeWarp.Nuru migrati
 
 ### Critical (README.md)
 
-- [ ] Remove all `--with-covers` references (lines 102-103, 259) - feature was removed
-- [ ] Update framework attribution from Spectre.Console to TimeWarp.Nuru (line 288-289)
-- [ ] Add missing `github` command to command list
-- [ ] Add missing `nuget` command to command list
-- [ ] Document `--interactive` flag alongside `-i` for REPL mode
+- [x] Remove all `--with-covers` references (lines 102-103, 259) - feature was removed
+- [x] Update framework attribution from Spectre.Console to TimeWarp.Nuru (line 288-289)
+- [x] Add missing `github` command to command list
+- [x] Add missing `nuget` command to command list
+- [x] Document `--interactive` flag alongside `-i` for REPL mode
 
 ### Critical (copilot-instructions.md) - Complete Rewrite
 
-- [ ] Update project overview to reference TimeWarp.Nuru
-- [ ] Replace Command class structure with route-based pattern documentation
-- [ ] Remove obsolete `AsyncCommand<T>` and `CommandSettings` patterns
-- [ ] Document Nuru route pattern syntax (`{param}`, `{param?}`, `--flag?`, etc.)
-- [ ] Document Handler pattern (static classes in `Handlers/`)
-- [ ] Document URL constants pattern (`Urls.cs` + inline lambdas)
-- [ ] Remove obsolete registration instructions (no Commands folder, no InteractiveMode.cs)
-- [ ] Replace Spectre.Console markup conventions with Nuru fluent extensions
-- [ ] Document pipeline behaviors for cross-cutting concerns
-- [ ] Add current project structure
+- [x] Update project overview to reference TimeWarp.Nuru
+- [x] Replace Command class structure with route-based pattern documentation
+- [x] Remove obsolete `AsyncCommand<T>` and `CommandSettings` patterns
+- [x] Document Nuru route pattern syntax (`{param}`, `{param?}`, `--flag?`, etc.)
+- [x] Document Handler pattern (static classes in `Handlers/`)
+- [x] Document URL constants pattern (`Urls.cs` + inline lambdas)
+- [x] Remove obsolete registration instructions (no Commands folder, no InteractiveMode.cs)
+- [x] Replace Spectre.Console markup conventions with Nuru fluent extensions
+- [x] Document pipeline behaviors for cross-cutting concerns
+- [x] Add current project structure
 
 ### Medium (CONTRIBUTING.md)
 
-- [ ] Update `QuoteCommand` reference to `QuoteHandler`
-- [ ] Update `TipsCommand` reference to `TipHandler`
-- [ ] Update `CoursesCommand` reference to `CoursesHandler`
-- [ ] Update `BooksCommand` reference to `BooksHandler`
+- [x] Update `QuoteCommand` reference to `QuoteHandler`
+- [x] Update `TipsCommand` reference to `TipHandler`
+- [x] Update `CoursesCommand` reference to `CoursesHandler`
+- [x] Update `BooksCommand` reference to `BooksHandler`
 
 ## Notes
 

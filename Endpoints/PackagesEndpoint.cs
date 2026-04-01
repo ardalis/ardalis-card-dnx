@@ -7,27 +7,28 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Mediator;
-using Microsoft.Extensions.Logging;
 using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 using static Ardalis.Cli.Urls;
 using static Ardalis.Helpers.UrlHelper;
 
-namespace Ardalis.Cli.Handlers;
+namespace Ardalis.Cli.Endpoints;
 
 /// <summary>
 /// Displays popular Ardalis NuGet packages using Nuru table widget.
 /// </summary>
-public sealed class PackagesCommand : IRequest
+[NuruRoute("packages", Description = "Display popular Ardalis NuGet packages")]
+public sealed class PackagesEndpoint : IQuery<Unit>
 {
-    public bool All { get; init; }
-    public int? Size { get; init; }
+    [Option("all", "a", Description = "Show all packages including sub-packages")]
+    public bool All { get; set; }
 
-    public sealed class Handler : IRequestHandler<PackagesCommand>
+    [Option("page-size", "p", Description = "Number of packages per page")]
+    public int? PageSize { get; set; }
+
+    public sealed class Handler(
+        IHttpClientFactory httpClientFactory) : IQueryHandler<PackagesEndpoint, Unit>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<Handler> _logger;
-
         private static readonly PackageInfo[] FallbackPackages =
         [
             new("Ardalis.GuardClauses", "Guard clause extensions for validating method arguments", 36255041),
@@ -39,32 +40,22 @@ public sealed class PackagesCommand : IRequest
             new("Ardalis.SharedKernel", "Base types for Domain-Driven Design and Clean Architecture", 414411)
         ];
 
-        public Handler(
-            IHttpClientFactory httpClientFactory,
-            ILogger<Handler> logger)
+        public async ValueTask<Unit> Handle(PackagesEndpoint query, CancellationToken ct)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
-
-        public async ValueTask<Unit> Handle(
-            PackagesCommand request,
-            CancellationToken cancellationToken)
-        {
-            ITerminal terminal = NuruTerminal.Default;
+            ITerminal terminal = TimeWarpTerminal.Default;
 
             terminal.WriteLine("Ardalis's Popular NuGet Packages".Green().Bold());
             terminal.WriteLine();
 
             // Try to fetch packages from NuGet API, fall back to hardcoded list if it fails
-            PackageInfo[]? packages = await GetPackagesFromApiAsync(request.All, cancellationToken);
+            PackageInfo[]? packages = await GetPackagesFromApiAsync(query.All, ct);
             packages ??= FallbackPackages;
 
-            int pageSize = request.Size ?? 10;
+            int pageSize = query.PageSize ?? 10;
 
-            if (request.All)
+            if (query.All)
             {
-                DisplayPackagesTable(terminal, packages);
+                DisplayPackagesTable(packages);
             }
             else
             {
@@ -77,7 +68,7 @@ public sealed class PackagesCommand : IRequest
                     int endIndex = Math.Min(currentIndex + pageSize, packagesList.Count);
                     PackageInfo[] pagePackages = packagesList.Skip(currentIndex).Take(endIndex - currentIndex).ToArray();
 
-                    DisplayPackagesTable(terminal, pagePackages);
+                    DisplayPackagesTable(pagePackages);
 
                     currentIndex = endIndex;
 
@@ -104,49 +95,51 @@ public sealed class PackagesCommand : IRequest
             terminal.WriteLine();
             terminal.WriteLine("Visit: ".Gray() + NuGet.Link(NuGet).Cyan());
 
-            return Unit.Value;
+            return default;
         }
 
-        private static void DisplayPackagesTable(ITerminal terminal, PackageInfo[] packages)
+        private static void DisplayPackagesTable(PackageInfo[] packages)
         {
-            Table table = new Table()
-                .AddColumn("Package")
-                .AddColumn("Downloads", Alignment.Right)
-                .AddColumn("Description");
+            var terminal = TimeWarpTerminal.Default;
 
-            table.Border = BorderStyle.Rounded;
-
-            foreach (PackageInfo package in packages)
+            terminal.WriteTable(table =>
             {
-                string downloads = $"📦 {package.TotalDownloads:N0}";
-                string description = package.Description;
+                table
+                    .AddColumn("Package")
+                    .AddColumn("Downloads", Alignment.Right)
+                    .AddColumn("Description")
+                    .Border(BorderStyle.Rounded);
 
-                if (description.Length > 50)
+                foreach (PackageInfo package in packages)
                 {
-                    description = description[..47] + "...";
+                    string downloads = $"📦 {package.TotalDownloads:N0}";
+                    string description = package.Description;
+
+                    if (description.Length > 50)
+                    {
+                        description = description[..47] + "...";
+                    }
+
+                    string nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
+                    string urlWithTracking = AddUtmSource(nugetUrl);
+
+                    table.AddRow(
+                        package.Name.Link(urlWithTracking).Cyan(),
+                        downloads.Yellow(),
+                        description.Gray()
+                    );
                 }
-
-                string nugetUrl = $"https://www.nuget.org/packages/{package.Name}";
-                string urlWithTracking = AddUtmSource(nugetUrl);
-
-                table.AddRow(
-                    package.Name.Link(urlWithTracking).Cyan(),
-                    downloads.Yellow(),
-                    description.Gray()
-                );
-            }
-
-            terminal.WriteTable(table);
+            });
         }
 
-        private async Task<PackageInfo[]?> GetPackagesFromApiAsync(bool showAll, CancellationToken cancellationToken)
+        private async Task<PackageInfo[]?> GetPackagesFromApiAsync(bool showAll, CancellationToken ct)
         {
             try
             {
-                HttpClient client = _httpClientFactory.CreateClient("NuGet");
+                HttpClient client = httpClientFactory.CreateClient("NuGet");
                 NuGetSearchResult? searchResult = await client.GetFromJsonAsync<NuGetSearchResult>(
                     "query?q=owner:ardalis&take=100",
-                    cancellationToken);
+                    ct);
 
                 if (searchResult?.Data == null)
                 {
@@ -166,9 +159,9 @@ public sealed class PackagesCommand : IRequest
                     .Select(p => new PackageInfo(p.Id, p.Description ?? "", p.TotalDownloads))
                     .ToArray();
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogWarning(ex, "Failed to fetch packages from NuGet API");
+                // Return null to trigger fallback
                 return null;
             }
         }

@@ -9,41 +9,31 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Api;
-using Mediator;
-using Microsoft.Extensions.Logging;
 using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 
-namespace Ardalis.Cli.Handlers;
+namespace Ardalis.Cli.Endpoints;
 
 /// <summary>
 /// Displays top videos from .NET Conf playlists using Nuru table widget.
 /// </summary>
-public sealed class DotNetConfScoreCommand : IRequest
+[NuruRoute("dotnetconf-score", Description = "Display top videos from .NET Conf playlists")]
+public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 {
-    public int? Year { get; init; }
+    [Parameter(Description = "Year to display scores for")]
+    public int? Year { get; set; }
 
-    public sealed class Handler : IRequestHandler<DotNetConfScoreCommand>
+    public sealed class Handler(
+        IHttpClientFactory httpClientFactory) : IQueryHandler<DotNetConfScoreEndpoint, Unit>
     {
         private const string PlaylistsJsonUrl = "https://ardalis.com/playlists.json";
         private const string EncodedPayload = "c2d3cTRzQlJMVUxyWThXOXcyeUdEcFY5aGRQSGNTS3ZHNHVwdjcwcmFDQQ==";
 
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<Handler> _logger;
-
-        public Handler(
-            IHttpClientFactory httpClientFactory,
-            ILogger<Handler> logger)
+        private int GetDefaultYear() => DateTime.Now.Month >= 11 ? DateTime.Now.Year : DateTime.Now.Year - 1;
+        public async ValueTask<Unit> Handle(DotNetConfScoreEndpoint query, CancellationToken ct)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
-
-        public async ValueTask<Unit> Handle(
-            DotNetConfScoreCommand request,
-            CancellationToken cancellationToken)
-        {
-            int year = request.Year ?? DateTime.Now.Year;
-            ITerminal terminal = NuruTerminal.Default;
+            int year = query.Year ?? GetDefaultYear();
+            ITerminal terminal = TimeWarpTerminal.Default;
 
             terminal.WriteLine($".NET Conf {year} - Top Videos by Views".Green().Bold());
             terminal.WriteLine();
@@ -51,7 +41,7 @@ public sealed class DotNetConfScoreCommand : IRequest
             try
             {
                 // Fetch playlists data using ArdalisWeb client
-                List<PlaylistInfo> playlists = await FetchPlaylistsDataAsync(cancellationToken);
+                List<PlaylistInfo> playlists = await FetchPlaylistsDataAsync(ct);
 
                 // Find matching playlist
                 PlaylistInfo? playlist = playlists.FirstOrDefault(p =>
@@ -65,11 +55,11 @@ public sealed class DotNetConfScoreCommand : IRequest
                         .Where(y => y.HasValue)
                         .Select(y => y!.Value);
                     terminal.WriteLine($"Available years: {string.Join(", ", availableYears)}".Gray());
-                    return Unit.Value;
+                    return default;
                 }
 
                 // Use ArdalisApi client for video stats
-                HttpClient apiClient = _httpClientFactory.CreateClient("ArdalisApi");
+                HttpClient apiClient = httpClientFactory.CreateClient("ArdalisApi");
                 string apiKey = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(EncodedPayload));
                 var client = new ArdalisApiClient(apiClient, apiKey);
 
@@ -84,15 +74,15 @@ public sealed class DotNetConfScoreCommand : IRequest
                 if (topVideos.Count == 0)
                 {
                     terminal.WriteLine("No videos found in the playlist".Yellow());
-                    return Unit.Value;
+                    return default;
                 }
 
                 // Display in a table
-                DisplayVideosTable(terminal, topVideos, highlightVideoIds);
+                DisplayVideosTable(topVideos, highlightVideoIds);
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "Error fetching .NET Conf data for year {Year}", year);
+                Console.Error.WriteLine($"Error fetching .NET Conf data for year {year}");
                 terminal.WriteLine($"Error fetching data: {ex.Message}".Red());
                 terminal.WriteLine();
 
@@ -108,17 +98,17 @@ public sealed class DotNetConfScoreCommand : IRequest
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error fetching .NET Conf data for year {Year}", year);
+                Console.Error.WriteLine($"Unexpected error: {ex.Message}");
                 terminal.WriteLine($"Unexpected error: {ex.Message}".Red());
             }
 
-            return Unit.Value;
+            return default;
         }
 
-        private async Task<List<PlaylistInfo>> FetchPlaylistsDataAsync(CancellationToken cancellationToken)
+        private async Task<List<PlaylistInfo>> FetchPlaylistsDataAsync(CancellationToken ct)
         {
-            HttpClient webClient = _httpClientFactory.CreateClient("ArdalisWeb");
-            string response = await webClient.GetStringAsync(PlaylistsJsonUrl, cancellationToken);
+            HttpClient webClient = httpClientFactory.CreateClient("ArdalisWeb");
+            string response = await webClient.GetStringAsync(PlaylistsJsonUrl, ct);
             List<PlaylistInfo>? playlists = JsonSerializer.Deserialize<List<PlaylistInfo>>(response, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -126,43 +116,46 @@ public sealed class DotNetConfScoreCommand : IRequest
             return playlists ?? [];
         }
 
-        private static void DisplayVideosTable(ITerminal terminal, List<VideoDetails> videos, HashSet<string> highlightVideoIds)
+        private static void DisplayVideosTable(List<VideoDetails> videos, HashSet<string> highlightVideoIds)
         {
-            Table table = new Table()
-                .AddColumn("Rank", Alignment.Center)
-                .AddColumn("Title", Alignment.Left)
-                .AddColumn("Views", Alignment.Right);
+            var terminal = TimeWarpTerminal.Default;
 
-            table.Border = BorderStyle.Rounded;
-
-            int rank = 1;
-            foreach (VideoDetails video in videos)
+            terminal.WriteTable(table =>
             {
-                bool isHighlighted = highlightVideoIds.Contains(video.Id);
-                string title = video.Title.Length > 80 ? video.Title[..77] + "..." : video.Title;
-                string views = video.ViewCount.ToString("N0");
+                table
+                    .AddColumn("Rank", Alignment.Center)
+                    .AddColumn("Title", Alignment.Left)
+                    .AddColumn("Views", Alignment.Right)
+                    .Border(BorderStyle.Rounded);
 
-                if (isHighlighted)
+                int rank = 1;
+                foreach (VideoDetails video in videos)
                 {
-                    table.AddRow(
-                        rank.ToString().Yellow().Bold(),
-                        ("⭐ " + title).Link(video.Url).Yellow().Bold(),
-                        views.Yellow().Bold()
-                    );
-                }
-                else
-                {
-                    table.AddRow(
-                        rank.ToString().Gray(),
-                        title.Link(video.Url),
-                        views.Gray()
-                    );
-                }
+                    bool isHighlighted = highlightVideoIds.Contains(video.Id);
+                    string title = video.Title.Length > 80 ? video.Title[..77] + "..." : video.Title;
+                    string views = video.ViewCount.ToString("N0");
 
-                rank++;
-            }
+                    if (isHighlighted)
+                    {
+                        table.AddRow(
+                            rank.ToString().Yellow().Bold(),
+                            ("⭐ " + title).Link(video.Url).Yellow().Bold(),
+                            views.Yellow().Bold()
+                        );
+                    }
+                    else
+                    {
+                        table.AddRow(
+                            rank.ToString().Gray(),
+                            title.Link(video.Url),
+                            views.Gray()
+                        );
+                    }
 
-            terminal.WriteTable(table);
+                    rank++;
+                }
+            });
+
             terminal.WriteLine();
             terminal.WriteLine("⭐ indicates Ardalis's video".Gray());
         }

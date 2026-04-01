@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using TimeWarp.Nuru;
+using TimeWarp.Terminal;
 
 namespace Ardalis.Helpers;
 
@@ -38,7 +38,7 @@ public static class UrlHelper
 
     public static void Open(string url)
     {
-        ITerminal terminal = NuruTerminal.Default;
+        ITerminal terminal = TimeWarpTerminal.Default;
 
         // Add UTM source for tracking
         string urlWithTracking = AddUtmSource(url);
