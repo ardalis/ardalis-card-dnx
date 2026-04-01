@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Ardalis.Cli.Behaviors;
-using Ardalis.Cli.Telemetry;
 using Microsoft.Extensions.DependencyInjection;
 using TimeWarp.Nuru;
 
@@ -18,7 +17,6 @@ public class Program
             .ConfigureServices(services =>
             {
                 services.AddLogging();
-                services.AddSingleton<PostHogService>();
 
                 // Named HTTP clients for DI
                 services.AddHttpClient("GitHub", client =>
@@ -52,8 +50,7 @@ public class Program
                     client.Timeout = TimeSpan.FromSeconds(10);
                 });
             })
-            // TODO: Re-enable PostHog behavior once DI issues are resolved
-            // .AddBehavior(typeof(PostHogNuruBehavior))
+            .AddBehavior(typeof(PostHogNuruBehavior))
             // Auto-discover all [NuruRoute] endpoints
             .DiscoverEndpoints()
             // Configure REPL mode
@@ -71,9 +68,11 @@ public class Program
         if (args.Length > 0 && (args[0] == "-i" || args[0] == "--interactive"))
         {
             await app.RunReplAsync();
-            return 0;
+            return default;
         }
 
-        return await app.RunAsync(args);
+        await app.RunAsync(args);
+        return default;
+
     }
 }

@@ -37,6 +37,7 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 
             terminal.WriteLine($".NET Conf {year} - Top Videos by Views".Green().Bold());
             terminal.WriteLine();
+            terminal.WriteLine();
 
             try
             {
@@ -157,6 +158,7 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
             });
 
             terminal.WriteLine();
+            terminal.WriteLine("Links in the table can be opened in your browser by clicking on them.".Gray());
             terminal.WriteLine("⭐ indicates Ardalis's video".Gray());
         }
 
