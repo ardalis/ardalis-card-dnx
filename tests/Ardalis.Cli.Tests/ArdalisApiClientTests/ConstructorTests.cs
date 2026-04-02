@@ -1,13 +1,13 @@
-using Ardalis.Api;
+using Ardalis.Cli.Services;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
 
 /// <summary>
 /// Tests for ArdalisApiClient constructor guard clauses — the constructors enforce
 /// API key presence at object creation time, preventing misconfigured clients from
 /// making requests that would silently fail at runtime.
 /// </summary>
-public class ArdalisApiClientConstructorTests
+public class ConstructorTests
 {
     // --- (string apiKey) overload ---
 

@@ -1,7 +1,7 @@
 using System.Reflection;
-using Ardalis.Api;
+using Ardalis.Cli.Services;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
 
 /// <summary>
 /// Tests for ArdalisApiClient.ExtractPlaylistId — a private static method that normalises
@@ -9,7 +9,7 @@ namespace Ardalis.Cli.Tests;
 /// plain IDs, full playlist URLs, and URLs that embed the list ID alongside other params.
 /// Tested via reflection because the extraction logic is independently verifiable.
 /// </summary>
-public class ArdalisApiClientExtractPlaylistIdTests
+public class ExtractPlaylistIdTests
 {
     private static readonly MethodInfo ExtractPlaylistId =
         typeof(ArdalisApiClient)

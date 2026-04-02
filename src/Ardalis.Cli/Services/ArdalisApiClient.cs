@@ -1,7 +1,7 @@
-﻿// ArdalisApiClient.cs
+// ArdalisApiClient.cs
 // Self-contained client for api.ardalis.com
 // Copy this entire file into your project and use the ArdalisApiClient class
-// 
+//
 // Usage:
 //   var client = new ArdalisApiClient("your-api-key", "https://api.ardalis.com");
 //   var stats = await client.GetPlaylistStatsAsync("PLsmmv2FZDrU9rLQ0s1eMVqQhGVvRWGbHH");
@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 #nullable enable
 
-namespace Ardalis.Api;
+namespace Ardalis.Cli.Services;
 
 /// <summary>
 /// Client for interacting with api.ardalis.com
@@ -82,7 +82,7 @@ public class ArdalisApiClient : IDisposable
     var playlistId = ExtractPlaylistId(playlistIdOrUrl);
 
     using var request = new HttpRequestMessage(HttpMethod.Get, $"/youtube/playlists/{Uri.EscapeDataString(playlistId)}/stats");
-    
+
     if (!string.IsNullOrWhiteSpace(youtubeApiKeyOverride))
     {
       request.Headers.Add("X-YouTube-Api-Key", youtubeApiKeyOverride);

@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Ardalis.Api;
+using Ardalis.Cli.Services;
 using TimeWarp.Nuru;
 using TimeWarp.Terminal;
 

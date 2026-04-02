@@ -1,7 +1,7 @@
-﻿using System.Threading;
+using System.Threading;
 using Ardalis.Cli.Endpoints;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.Endpoints.CoursesEndpointTests;
 
 /// <summary>
 /// Tests for CoursesEndpoint.Handler.Handle() — the #1 risk hotspot (CRAP 420,
@@ -10,7 +10,7 @@ namespace Ardalis.Cli.Tests;
 /// fallback path and all subsequent display logic without network I/O.
 /// All=true / large PageSize avoids Console.ReadKey blocking in tests.
 /// </summary>
-public class CoursesEndpointHandlerTests
+public class HandlerTests
 {
     [Test]
     public async Task Handle_DoesNotThrow_WhenHttpRequestFails_AllFlag()
