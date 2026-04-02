@@ -142,7 +142,8 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
             foreach (VideoDetails video in videos)
             {
                 bool isHighlighted = highlightVideoIds.Contains(video.Id);
-                string title = video.Title.Length > 80 ? video.Title[..77] + "..." : video.Title;
+                string rawTitle = video.Title.Length > 80 ? video.Title[..77] + "..." : video.Title;
+                string title = rawTitle.Replace("|", @"\|");
                 string views = video.ViewCount.ToString("N0");
                 string prefix = isHighlighted ? "⭐ " : string.Empty;
                 sb.AppendLine($"| {rank} | {prefix}[{title}]({video.Url}) | {views} |");

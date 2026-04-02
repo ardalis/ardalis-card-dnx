@@ -1,3 +1,13 @@
 <Solution>
-  <Project Path="ardalis.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/Ardalis.Cli/Ardalis.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ardalis.Cli.Tests/Ardalis.Cli.Tests.csproj" />
+  </Folder>
+  <Folder Name="/_sln/">
+    <File Path="README.md" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path=".gitignore" />
+  </Folder>
 </Solution>
