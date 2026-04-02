@@ -1,0 +1,75 @@
+name: ardalis CLI Build and Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_FILE: src/Ardalis.Cli/Ardalis.Cli.csproj
+  TEST_PROJECT: tests/Ardalis.Cli.Tests/Ardalis.Cli.Tests.csproj
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    # See https://josh-ops.com/posts/github-code-coverage/
+    # Requires coverlet.collector package in the test project
+    - name: Test with coverage
+      run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+
+    - name: Copy Coverage To Predictable Location
+      run: find coverage -type f -name coverage.cobertura.xml -exec cp -p {} coverage/coverage.cobertura.xml \;
+
+    - name: Code Coverage Summary Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/coverage.cobertura.xml
+        badge: true
+        format: 'markdown'
+        output: 'both'
+
+    - name: Upload code coverage results artifact
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: code-coverage-results
+        path: code-coverage-results.md
+        retention-days: 1
+
+    - name: Save workflow outputs for PR comment
+      if: github.event_name == 'pull_request' && (success() || failure())
+      shell: bash
+      env:
+        PR_NUMBER: ${{ github.event.number }}
+      run: |
+        echo $PR_NUMBER > pr_number.txt
+        echo "code-coverage-results" > artifact_name.txt
+        echo "code-coverage-results.md" > artifact_path.txt
+
+    - name: Upload workflow outputs
+      uses: actions/upload-artifact@v4
+      if: github.event_name == 'pull_request' && (success() || failure())
+      with:
+        name: workflow-outputs
+        path: |
+          pr_number.txt
+          artifact_name.txt
+          artifact_path.txt
+        retention-days: 1
