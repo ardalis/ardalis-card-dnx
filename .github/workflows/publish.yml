@@ -6,7 +6,8 @@ on:
     types: [published]
 
 env:
-  PROJECT_FILE: ardalis.csproj
+  PROJECT_FILE: src/Ardalis.Cli/Ardalis.Cli.csproj
+  TEST_PROJECT: tests/Ardalis.Cli.Tests/Ardalis.Cli.Tests.csproj
   PACK_OUTPUT: artifacts/package/release
 
 jobs:
@@ -29,6 +30,12 @@ jobs:
 
       - name: Build
         run: dotnet build "${{ env.PROJECT_FILE }}" --configuration Release --no-restore
+
+      - name: Build tests
+        run: dotnet build "${{ env.TEST_PROJECT }}" --configuration Release
+
+      - name: Test
+        run: dotnet run --project "${{ env.TEST_PROJECT }}" --configuration Release --no-build
 
       - name: Pack
         run: dotnet pack "${{ env.PROJECT_FILE }}" --configuration Release --no-build --no-restore --output "${{ env.PACK_OUTPUT }}"

@@ -317,13 +317,57 @@ The `dnx` command is .NET's answer to Node.js's `npx`, introduced in .NET 10. It
 
 Learn more: [Running one-off .NET tools with dnx](https://andrewlock.net/exploring-dotnet-10-preview-features-5-running-one-off-dotnet-tools-with-dnx/)
 
+## Repository Structure
+
+```
+ardalis-card-dnx/
+├── src/
+│   └── Ardalis.Cli/              # Main CLI tool project
+│       ├── Ardalis.Cli.csproj
+│       ├── Program.cs            # Route definitions (all commands registered here)
+│       ├── Urls.cs               # Centralised URL constants
+│       ├── ArdalisApiClient.cs   # HTTP client for api.ardalis.com
+│       ├── NuGetVersionData.cs   # NuGet API response model
+│       ├── Behaviors/            # TimeWarp.Nuru pipeline behaviors (e.g. telemetry)
+│       ├── Endpoints/            # One file per command (IQuery handlers)
+│       ├── Helpers/              # UrlHelper, QuoteHelper, TipHelper
+│       └── Telemetry/            # OpenTelemetry / PostHog wiring
+└── tests/
+    └── Ardalis.Cli.Tests/        # TUnit test project
+        ├── Ardalis.Cli.Tests.csproj
+        ├── ArdalisApiClientConstructorTests.cs
+        ├── ArdalisApiClientExtractPlaylistIdTests.cs
+        ├── ParsePublicationYearTests.cs
+        ├── UrlHelperAddUtmSourceTests.cs
+        └── UrlHelperStripQueryStringTests.cs
+```
+
 ## Building from Source
 
 ```bash
+# Build everything
 dotnet build
-dotnet pack
-dotnet tool install -g --add-source ./bin/Debug ardalis
+
+# Pack the tool
+dotnet pack src/Ardalis.Cli/Ardalis.Cli.csproj
+
+# Install locally from the packed output
+dotnet tool install -g --add-source ./src/Ardalis.Cli/bin/Debug ardalis
+
+# Or install and immediately test a specific command
+dotnet run --project src/Ardalis.Cli -- card
+dotnet run --project src/Ardalis.Cli -- --help
 ```
+
+## Running Tests
+
+Tests use [TUnit](https://github.com/thomhurst/TUnit) and are run with `dotnet run`:
+
+```bash
+dotnet run --project tests/Ardalis.Cli.Tests
+```
+
+**Do not** use `dotnet test` — TUnit on .NET 10 uses the Microsoft Testing Platform runner, which requires `dotnet run`.
 
 ## About
 

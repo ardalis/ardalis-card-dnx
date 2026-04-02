@@ -11,4 +11,8 @@
     <PackageReference Include="TUnit" Version="*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Ardalis.Cli\Ardalis.Cli.csproj" />
+  </ItemGroup>
+
 </Project>

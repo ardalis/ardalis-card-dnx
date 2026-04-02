@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/ardalis-cli/ardalis.csproj" />
+    <Project Path="src/Ardalis.Cli/Ardalis.Cli.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Ardalis.Cli.Tests/Ardalis.Cli.Tests.csproj" />
