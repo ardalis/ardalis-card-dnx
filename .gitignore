@@ -345,6 +345,12 @@ paket-files/
 **/__pycache__/
 *.pyc
 
+# Local reportgenerator tool (installed by testcoverage.cs)
+tools/
+
+# Coverage reports
+coverage-report/
+
 # Cake - Uncomment if you are using it
 #tools/**
 #!tools/packages.config

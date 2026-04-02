@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <CodeCoverage>
+    <Sources>
+      <Exclude>
+        <!-- Exclude source-generated files (*.g.cs) -->
+        <Source>.*\.g\.cs</Source>
+        <!-- Exclude test script and test project -->
+        <Source>.*testcoverage\.cs</Source>
+        <Source>.*[/\\]tests[/\\].*</Source>
+      </Exclude>
+    </Sources>
+  </CodeCoverage>
+</Configuration>

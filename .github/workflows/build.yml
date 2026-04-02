@@ -9,7 +9,6 @@ on:
 
 env:
   PROJECT_FILE: src/Ardalis.Cli/Ardalis.Cli.csproj
-  TEST_PROJECT: tests/Ardalis.Cli.Tests/Ardalis.Cli.Tests.csproj
 
 jobs:
   build:
@@ -30,12 +29,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     # See https://josh-ops.com/posts/github-code-coverage/
-    # Requires coverlet.collector package in the test project
+    # Requires Microsoft.Testing.Extensions.CodeCoverage package in the test project
     - name: Test with coverage
-      run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
-
-    - name: Copy Coverage To Predictable Location
-      run: find coverage -type f -name coverage.cobertura.xml -exec cp -p {} coverage/coverage.cobertura.xml \;
+      run: dotnet testcoverage.cs
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
