@@ -8,8 +8,8 @@ if (!isCI)
 
 Run("dotnet", "test --project tests/Ardalis.Cli.Tests --coverage --coverage-output coverage/coverage.cobertura.xml --coverage-output-format cobertura --coverage-settings coverage.settings");
 
-// MTP places coverage relative to the test binary's TestResults folder - copy to well-known location
-var coverageFile = Directory.GetFiles(".", "coverage.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault();
+// MTP places coverage inside the test binary's TestResults folder
+var coverageFile = Directory.GetFiles("tests", "coverage.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault();
 if (coverageFile is null)
 {
     Console.Error.WriteLine("No coverage.cobertura.xml found.");
@@ -18,7 +18,8 @@ if (coverageFile is null)
 
 const string coverageXml = "coverage/coverage.cobertura.xml";
 Directory.CreateDirectory("coverage");
-File.Copy(coverageFile, coverageXml, overwrite: true);
+if (File.Exists(coverageXml)) File.Delete(coverageXml);
+File.Copy(coverageFile, coverageXml);
 Console.WriteLine($"Coverage XML: {Path.GetFullPath(coverageXml)}");
 
 if (!isCI)

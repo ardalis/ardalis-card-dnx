@@ -5,6 +5,9 @@
       <Exclude>
         <!-- Exclude source-generated files (*.g.cs) -->
         <Source>.*\.g\.cs</Source>
+        <!-- Exclude test script and test project -->
+        <Source>.*testcoverage\.cs</Source>
+        <Source>.*[/\\]tests[/\\].*</Source>
       </Exclude>
     </Sources>
   </CodeCoverage>
