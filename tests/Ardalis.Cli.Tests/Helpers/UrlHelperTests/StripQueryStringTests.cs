@@ -1,12 +1,12 @@
 using Ardalis.Helpers;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.Helpers.UrlHelperTests;
 
 /// <summary>
 /// Tests for UrlHelper.StripQueryString — a pure string utility used throughout the CLI
 /// to display clean URLs to users while opening tracked URLs in the browser.
 /// </summary>
-public class UrlHelperStripQueryStringTests
+public class StripQueryStringTests
 {
     [Test]
     public async Task ReturnsOriginalUrl_WhenNoQueryString()

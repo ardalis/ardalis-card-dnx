@@ -1,7 +1,7 @@
-﻿using System.Threading;
+using System.Threading;
 using Ardalis.Cli.Endpoints;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.Endpoints.BooksEndpointTests;
 
 /// <summary>
 /// Tests for BooksEndpoint.Handler.Handle() — the #3 risk hotspot (CRAP 272,
@@ -11,7 +11,7 @@ namespace Ardalis.Cli.Tests;
 /// The single fallback book is fewer than the default page size of 10, so paging
 /// (and Console.ReadKey) is never triggered without needing to force NoPaging.
 /// </summary>
-public class BooksEndpointHandlerTests
+public class HandlerTests
 {
     [Test]
     public async Task Handle_DoesNotThrow_WhenHttpRequestFails_DefaultOptions()

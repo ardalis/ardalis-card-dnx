@@ -7,6 +7,10 @@ namespace Ardalis.Helpers;
 
 public static class UrlHelper
 {
+    // Seam for unit testing: replace to suppress real process launches.
+    // Production code always uses Process.Start; tests can substitute a no-op.
+    internal static Func<ProcessStartInfo, Process?> ProcessStart { get; set; } =
+        psi => Process.Start(psi);
     /// <summary>
     /// Removes query string parameters from a URL for display purposes
     /// </summary>
@@ -76,7 +80,7 @@ public static class UrlHelper
                 }
 
                 // Native Windows
-                using var ps = Process.Start(new ProcessStartInfo
+                using var ps = ProcessStart(new ProcessStartInfo
                 {
                     FileName = url,
                     UseShellExecute = true
@@ -107,7 +111,7 @@ public static class UrlHelper
     {
         try
         {
-            using var ps = Process.Start(new ProcessStartInfo
+            using var ps = ProcessStart(new ProcessStartInfo
             {
                 FileName = command,
                 Arguments = arguments,

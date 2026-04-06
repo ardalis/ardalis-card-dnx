@@ -1,7 +1,7 @@
 using System.Reflection;
 using Ardalis.Cli.Endpoints;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.Endpoints.BooksEndpointTests;
 
 /// <summary>
 /// Tests for BooksEndpoint.Handler.ParsePublicationYear — a private static method that

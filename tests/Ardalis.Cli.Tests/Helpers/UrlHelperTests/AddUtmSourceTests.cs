@@ -1,12 +1,12 @@
 using Ardalis.Helpers;
 
-namespace Ardalis.Cli.Tests;
+namespace Ardalis.Cli.Tests.Helpers.UrlHelperTests;
 
 /// <summary>
 /// Tests for UrlHelper.AddUtmSource — ensures tracking parameters are appended correctly
 /// to all URLs opened by the CLI so analytics accurately report CLI traffic.
 /// </summary>
-public class UrlHelperAddUtmSourceTests
+public class AddUtmSourceTests
 {
     [Test]
     public async Task AddsUtmSourceWithQuestionMark_WhenNoExistingQueryString()
