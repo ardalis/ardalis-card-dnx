@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.24.0</Version>
-    <ReleaseNotes>Added dotnetconf-stats as an alias for the dotnetconf-score command.</ReleaseNotes>
+    <Version>1.25.0</Version>
+    <ReleaseNotes>Fix nuget dependency errors.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
