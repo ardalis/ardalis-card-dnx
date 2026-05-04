@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +20,7 @@ namespace Ardalis.Cli.Endpoints;
 /// Displays top videos from .NET Conf playlists using Nuru table widget.
 /// </summary>
 [NuruRoute("dotnetconf-score", Description = "Display top videos from .NET Conf playlists. Use --output <file.md> to save results as a markdown file.")]
+[NuruRouteAlias("dotnetconf-stats")]
 public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 {
     [Parameter(Description = "Year to display scores for")]
