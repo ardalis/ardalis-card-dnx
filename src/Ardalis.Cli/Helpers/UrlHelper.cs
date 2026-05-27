@@ -77,7 +77,7 @@ public static class UrlHelper
                 // Check if running in WSL
                 if (IsWsl())
                 {
-                    return TryStartProcess("wslview", url) || TryStartProcess("explorer.exe", url);
+                    return TryStartProcess("explorer.exe", url);
                 }
 
                 // Native Windows
