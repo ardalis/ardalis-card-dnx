@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   get-inputs:
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
       pr-number: ${{ steps.prNumber.outputs.PR_NUMBER }}
@@ -44,6 +45,7 @@ jobs:
         run: echo "CODE_COVERAGE_ARTIFACT_PATH=$(cat artifact_path.txt)" >> $GITHUB_OUTPUT
 
   add-code-coverage-to-pr:
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
     needs: get-inputs
     uses: NimblePros/NimblePros.GitHub.Workflows/.github/workflows/comment-on-pr.yml@main
     with:
