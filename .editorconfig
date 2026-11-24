@@ -5,6 +5,7 @@ root = true
 # All files
 [*]
 indent_style = space
+end_of_line = lf
 
 # XML project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
@@ -74,7 +75,6 @@ dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 dotnet_naming_style.prefix_underscore.capitalization = camel_case
 dotnet_naming_style.prefix_underscore.required_prefix = _
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
-end_of_line = crlf
 ###############################
 # C# Coding Conventions       #
 ###############################
