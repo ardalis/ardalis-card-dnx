@@ -8,12 +8,12 @@ namespace Ardalis.Cli.Tests;
 /// </summary>
 internal sealed class ThrowingHttpClientFactory : IHttpClientFactory
 {
-    private readonly Exception _exception;
+  private readonly Exception _exception;
 
-    public ThrowingHttpClientFactory(Exception? exception = null)
-    {
-        _exception = exception ?? new HttpRequestException("Network unavailable");
-    }
+  public ThrowingHttpClientFactory(Exception? exception = null)
+  {
+    _exception = exception ?? new HttpRequestException("Network unavailable");
+  }
 
-    public HttpClient CreateClient(string name) => throw _exception;
+  public HttpClient CreateClient(string name) => throw _exception;
 }

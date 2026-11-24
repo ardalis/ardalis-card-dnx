@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Helpers;
 using TimeWarp.Nuru;
@@ -12,22 +12,22 @@ namespace Ardalis.Cli.Endpoints;
 [NuruRoute("quote", Description = "Display a random Ardalis quote")]
 public sealed class QuoteEndpoint : IQuery<Unit>
 {
-    public sealed class Handler : IQueryHandler<QuoteEndpoint, Unit>
+  public sealed class Handler : IQueryHandler<QuoteEndpoint, Unit>
+  {
+    public async ValueTask<Unit> Handle(QuoteEndpoint query, CancellationToken ct)
     {
-        public async ValueTask<Unit> Handle(QuoteEndpoint query, CancellationToken ct)
-        {
-            ITerminal terminal = TimeWarpTerminal.Default;
+      ITerminal terminal = TimeWarpTerminal.Default;
 
-            string quote = await QuoteHelper.GetRandomQuote();
+      string quote = await QuoteHelper.GetRandomQuote();
 
-            terminal.WriteLine();
-            terminal.WritePanel(panel => panel
-                .Content($"\"{quote}\"".Italic() + "\n\n" + "— Ardalis".Gray())
-                .Border(BorderStyle.Rounded)
-                .BorderColor(AnsiColors.Cyan)
-                .Padding(2, 1));
+      terminal.WriteLine();
+      terminal.WritePanel(panel => panel
+          .Content($"\"{quote}\"".Italic() + "\n\n" + "— Ardalis".Gray())
+          .Border(BorderStyle.Rounded)
+          .BorderColor(AnsiColors.Cyan)
+          .Padding(2, 1));
 
-            return default;
-        }
+      return default;
     }
+  }
 }

@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Ardalis.Cli.Services;
 
 namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
@@ -11,59 +11,59 @@ namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
 /// </summary>
 public class ExtractPlaylistIdTests
 {
-    private static readonly MethodInfo ExtractPlaylistId =
-        typeof(ArdalisApiClient)
-            .GetMethod("ExtractPlaylistId", BindingFlags.NonPublic | BindingFlags.Static)
-        ?? throw new MissingMethodException(nameof(ArdalisApiClient), "ExtractPlaylistId");
+  private static readonly MethodInfo ExtractPlaylistId =
+      typeof(ArdalisApiClient)
+          .GetMethod("ExtractPlaylistId", BindingFlags.NonPublic | BindingFlags.Static)
+      ?? throw new MissingMethodException(nameof(ArdalisApiClient), "ExtractPlaylistId");
 
-    private static string Invoke(string input) =>
-        (string)ExtractPlaylistId.Invoke(null, [input])!;
+  private static string Invoke(string input) =>
+      (string)ExtractPlaylistId.Invoke(null, [input])!;
 
-    [Test]
-    public async Task ReturnsIdUnchanged_WhenInputIsAlreadyAPlainId()
-    {
-        var result = Invoke("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
+  [Test]
+  public async Task ReturnsIdUnchanged_WhenInputIsAlreadyAPlainId()
+  {
+    var result = Invoke("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
 
-        await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
-    }
+    await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
+  }
 
-    [Test]
-    public async Task TrimsSurroundingWhitespace_WhenInputIsPlainId()
-    {
-        var result = Invoke("  PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1  ");
+  [Test]
+  public async Task TrimsSurroundingWhitespace_WhenInputIsPlainId()
+  {
+    var result = Invoke("  PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1  ");
 
-        await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
-    }
+    await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
+  }
 
-    [Test]
-    public async Task ExtractsListParam_WhenInputIsFullPlaylistUrl()
-    {
-        var result = Invoke("https://www.youtube.com/playlist?list=PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
+  [Test]
+  public async Task ExtractsListParam_WhenInputIsFullPlaylistUrl()
+  {
+    var result = Invoke("https://www.youtube.com/playlist?list=PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
 
-        await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
-    }
+    await Assert.That(result).IsEqualTo("PLrZbkNpNVN2eHOCkKR0VU8JXCrPLVAMV1");
+  }
 
-    [Test]
-    public async Task ExtractsListParam_WhenListIsNotFirstQueryParameter()
-    {
-        var result = Invoke("https://www.youtube.com/watch?v=someVideoId&list=PLsomeid123");
+  [Test]
+  public async Task ExtractsListParam_WhenListIsNotFirstQueryParameter()
+  {
+    var result = Invoke("https://www.youtube.com/watch?v=someVideoId&list=PLsomeid123");
 
-        await Assert.That(result).IsEqualTo("PLsomeid123");
-    }
+    await Assert.That(result).IsEqualTo("PLsomeid123");
+  }
 
-    [Test]
-    public async Task ExtractsListParam_WhenAdditionalParamsFollowList()
-    {
-        var result = Invoke("https://www.youtube.com/playlist?list=PLsomeid123&index=5&t=10s");
+  [Test]
+  public async Task ExtractsListParam_WhenAdditionalParamsFollowList()
+  {
+    var result = Invoke("https://www.youtube.com/playlist?list=PLsomeid123&index=5&t=10s");
 
-        await Assert.That(result).IsEqualTo("PLsomeid123");
-    }
+    await Assert.That(result).IsEqualTo("PLsomeid123");
+  }
 
-    [Test]
-    public async Task ReturnsTrimmedOriginal_WhenUrlContainsNoListParam()
-    {
-        var result = Invoke("https://www.youtube.com/watch?v=someVideoId");
+  [Test]
+  public async Task ReturnsTrimmedOriginal_WhenUrlContainsNoListParam()
+  {
+    var result = Invoke("https://www.youtube.com/watch?v=someVideoId");
 
-        await Assert.That(result).IsEqualTo("https://www.youtube.com/watch?v=someVideoId");
-    }
+    await Assert.That(result).IsEqualTo("https://www.youtube.com/watch?v=someVideoId");
+  }
 }

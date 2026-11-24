@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Ardalis.Cli.Endpoints;
 
 namespace Ardalis.Cli.Tests.Endpoints.BooksEndpointTests;
@@ -13,41 +13,41 @@ namespace Ardalis.Cli.Tests.Endpoints.BooksEndpointTests;
 /// </summary>
 public class HandlerTests
 {
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenHttpRequestFails_DefaultOptions()
-    {
-        var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
-        // Fallback has 1 book; default pageSize (10) > 1 — ReadKey is never reached
-        var query = new BooksEndpoint();
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenHttpRequestFails_DefaultOptions()
+  {
+    var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
+    // Fallback has 1 book; default pageSize (10) > 1 — ReadKey is never reached
+    var query = new BooksEndpoint();
 
-        await handler.Handle(query, CancellationToken.None);
-    }
+    await handler.Handle(query, CancellationToken.None);
+  }
 
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenHttpRequestFails_NoPagingFlag()
-    {
-        var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
-        var query = new BooksEndpoint { NoPaging = true };
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenHttpRequestFails_NoPagingFlag()
+  {
+    var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
+    var query = new BooksEndpoint { NoPaging = true };
 
-        await handler.Handle(query, CancellationToken.None);
-    }
+    await handler.Handle(query, CancellationToken.None);
+  }
 
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenHttpRequestFails_WithExplicitPageSize()
-    {
-        var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
-        var query = new BooksEndpoint { PageSize = 100 };
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenHttpRequestFails_WithExplicitPageSize()
+  {
+    var handler = new BooksEndpoint.Handler(new ThrowingHttpClientFactory());
+    var query = new BooksEndpoint { PageSize = 100 };
 
-        await handler.Handle(query, CancellationToken.None);
-    }
+    await handler.Handle(query, CancellationToken.None);
+  }
 
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenNonHttpExceptionThrown()
-    {
-        var factory = new ThrowingHttpClientFactory(new InvalidOperationException("client setup error"));
-        var handler = new BooksEndpoint.Handler(factory);
-        var query = new BooksEndpoint { NoPaging = true };
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenNonHttpExceptionThrown()
+  {
+    var factory = new ThrowingHttpClientFactory(new InvalidOperationException("client setup error"));
+    var handler = new BooksEndpoint.Handler(factory);
+    var query = new BooksEndpoint { NoPaging = true };
 
-        await handler.Handle(query, CancellationToken.None);
-    }
+    await handler.Handle(query, CancellationToken.None);
+  }
 }

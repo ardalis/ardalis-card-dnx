@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Ardalis.Cli.Telemetry;
 using Microsoft.Extensions.Configuration;
@@ -15,21 +15,21 @@ namespace Ardalis.Cli.Behaviors;
 /// </summary>
 public sealed class PostHogNuruBehavior : INuruBehavior
 {
-    private static readonly Lazy<PostHogService> _service = new(CreateService);
+  private static readonly Lazy<PostHogService> _service = new(CreateService);
 
-    private static PostHogService CreateService()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddEnvironmentVariables()
-            .Build();
-        var loggerFactory = NullLoggerFactory.Instance;
-        return new PostHogService(configuration, NullLogger<PostHogService>.Instance, loggerFactory);
-    }
+  private static PostHogService CreateService()
+  {
+    IConfiguration configuration = new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .Build();
+    var loggerFactory = NullLoggerFactory.Instance;
+    return new PostHogService(configuration, NullLogger<PostHogService>.Instance, loggerFactory);
+  }
 
-    public async ValueTask HandleAsync(BehaviorContext context, Func<ValueTask> proceed)
-    {
-        string commandName = context.CommandName.ToLowerInvariant();
-        _service.Value.TrackCommand(commandName);
-        await proceed();
-    }
+  public async ValueTask HandleAsync(BehaviorContext context, Func<ValueTask> proceed)
+  {
+    string commandName = context.CommandName.ToLowerInvariant();
+    _service.Value.TrackCommand(commandName);
+    await proceed();
+  }
 }

@@ -1,4 +1,4 @@
-// ArdalisApiClient.cs
+﻿// ArdalisApiClient.cs
 // Self-contained client for api.ardalis.com
 // Copy this entire file into your project and use the ArdalisApiClient class
 //

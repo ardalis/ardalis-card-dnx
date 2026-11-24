@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Ardalis.Cli.Telemetry;
 
@@ -7,13 +7,13 @@ namespace Ardalis.Cli.Telemetry;
 /// </summary>
 internal sealed class ArdalisCliTelemetry
 {
-    /// <summary>
-    /// The name of the ActivitySource for all CLI components.
-    /// </summary>
-    public const string ActivitySourceName = "Ardalis.Cli";
+  /// <summary>
+  /// The name of the ActivitySource for all CLI components.
+  /// </summary>
+  public const string ActivitySourceName = "Ardalis.Cli";
 
-    /// <summary>
-    /// The ActivitySource instance for all CLI components.
-    /// </summary>
-    public ActivitySource ActivitySource { get; } = new(ActivitySourceName);
+  /// <summary>
+  /// The ActivitySource instance for all CLI components.
+  /// </summary>
+  public ActivitySource ActivitySource { get; } = new(ActivitySourceName);
 }

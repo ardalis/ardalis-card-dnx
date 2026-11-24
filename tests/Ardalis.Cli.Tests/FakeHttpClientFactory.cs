@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -14,15 +14,15 @@ internal sealed class FakeHttpMessageHandler(
     string responseContent,
     HttpStatusCode statusCode = HttpStatusCode.OK) : HttpMessageHandler
 {
-    protected override Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request, CancellationToken cancellationToken)
+  protected override Task<HttpResponseMessage> SendAsync(
+      HttpRequestMessage request, CancellationToken cancellationToken)
+  {
+    var response = new HttpResponseMessage(statusCode)
     {
-        var response = new HttpResponseMessage(statusCode)
-        {
-            Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
-        };
-        return Task.FromResult(response);
-    }
+      Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+    };
+    return Task.FromResult(response);
+  }
 }
 
 /// <summary>
@@ -34,13 +34,13 @@ internal sealed class FakeHttpClientFactory(
     HttpStatusCode statusCode = HttpStatusCode.OK,
     Uri? baseAddress = null) : IHttpClientFactory
 {
-    public HttpClient CreateClient(string name)
-    {
-        var client = new HttpClient(new FakeHttpMessageHandler(responseContent, statusCode));
-        if (baseAddress != null)
-            client.BaseAddress = baseAddress;
-        return client;
-    }
+  public HttpClient CreateClient(string name)
+  {
+    var client = new HttpClient(new FakeHttpMessageHandler(responseContent, statusCode));
+    if (baseAddress != null)
+      client.BaseAddress = baseAddress;
+    return client;
+  }
 }
 
 /// <summary>
@@ -51,9 +51,9 @@ internal sealed class FakeHttpClientFactory(
 /// </summary>
 internal sealed class ThrowingHttpMessageHandler(Exception exception) : HttpMessageHandler
 {
-    protected override Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request, CancellationToken cancellationToken)
-        => Task.FromException<HttpResponseMessage>(exception);
+  protected override Task<HttpResponseMessage> SendAsync(
+      HttpRequestMessage request, CancellationToken cancellationToken)
+      => Task.FromException<HttpResponseMessage>(exception);
 }
 
 /// <summary>
@@ -65,8 +65,8 @@ internal sealed class ThrowingHttpMessageHandler(Exception exception) : HttpMess
 /// </summary>
 internal sealed class ThrowingOnRequestHttpClientFactory(Exception? exception = null) : IHttpClientFactory
 {
-    private readonly Exception _exception = exception ?? new HttpRequestException("Network unavailable");
+  private readonly Exception _exception = exception ?? new HttpRequestException("Network unavailable");
 
-    public HttpClient CreateClient(string name)
-        => new HttpClient(new ThrowingHttpMessageHandler(_exception));
+  public HttpClient CreateClient(string name)
+      => new HttpClient(new ThrowingHttpMessageHandler(_exception));
 }
