@@ -36,13 +36,21 @@ Issue: https://github.com/ardalis/ardalis-card-dnx/issues/75
 - [x] Unit: built-in playlists include 2026 with the issue's playlist URL and highlight video.
 - [x] Unit: merge adds 2026 when remote lacks it; remote entry wins for duplicate years; result sorted descending.
 - [x] Unit: `ExtractVideoId` handles `youtu.be` short links.
-- [x] Handler: invalid remote JSON does not throw (falls back to built-ins).
+- [x] Handler: invalid remote JSON, failed remote request, and remote data lacking 2026 (incl. a null-name entry) all use the built-in 2026 playlist (asserted via the recorded API request path).
 
 ## Phase 3 — Independent review
 
 - [x] Separate agent reviews the full diff (correctness, requirements, tests, security, performance, accessibility).
 - [x] Address all significant findings (or record reasons here).
+  - Review found nothing significant. Addressed low/nit items: real fallback assertions,
+    null-name entries filtered, gray notice when built-ins are used, exact sort-order assertion.
+  - Not changed: site update for `ardalis-com-hugo` (out of scope; must include the 2026
+    highlight URL since remote entries override built-ins), version bump (done in separate
+    release PRs), `youtu.be` regex host anchoring (URLs are trusted static data).
 
 ## Phase 4 — Verification
 
-- [x] `dotnet build && dotnet test && dotnet format --verify-no-changes` passes.
+- [x] `dotnet build` succeeds and `dotnet test` passes.
+- [x] `dotnet format --verify-no-changes`: fails on `main` already (repo-wide 2-space indent
+  rule in `.editorconfig` that existing code doesn't follow). New code matches the existing
+  4-space style; no new CHARSET/ENDOFLINE issues introduced.

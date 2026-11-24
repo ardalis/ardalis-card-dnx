@@ -153,11 +153,12 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                return playlists?.Where(p => p is not null).ToList() ?? [];
+                return playlists?.Where(p => p is not null && !string.IsNullOrWhiteSpace(p.Name)).ToList() ?? [];
             }
             catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException && !ct.IsCancellationRequested)
             {
                 // Remote data is optional; the built-in playlists are used instead.
+                TimeWarpTerminal.Default.WriteLine("Could not load the latest playlist list from ardalis.com; using built-in playlists.".Gray());
                 return [];
             }
         }

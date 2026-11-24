@@ -63,9 +63,7 @@ public class PlaylistTests
             .Select(p => DotNetConfScoreEndpoint.Handler.ExtractYear(p.Name))
             .ToList();
 
-        await Assert.That(years).IsEquivalentTo(new List<int?> { 2026, 2025, 2024, 2023, 2022, 2021 });
-        await Assert.That(years[0]).IsEqualTo(2026);
-        await Assert.That(years[^1]).IsEqualTo(2021);
+        await Assert.That(string.Join(",", years)).IsEqualTo("2026,2025,2024,2023,2022,2021");
     }
 
     [Test]
