@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.26.0</Version>
-    <ReleaseNotes>Added .NET Conf 2026 support to dotnetconf-score/dotnetconf-stats. Fixed opening URLs from WSL.</ReleaseNotes>
+    <Version>1.27.0</Version>
+    <ReleaseNotes>Added a help command so typing help works in interactive mode. Fixed ardalis -i crashing on start.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
