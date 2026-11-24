@@ -50,4 +50,16 @@ public class HandlerTests
 
     await handler.Handle(query, CancellationToken.None);
   }
+
+    [Test]
+    public async Task Handle_DoesNotThrow_WhenRemotePlaylistsJsonIsInvalid()
+    {
+        // Invalid playlists.json falls back to built-in playlists; the subsequent
+        // video stats request also receives invalid data and is handled gracefully.
+        var factory = new FakeHttpClientFactory("not json");
+        var handler = new DotNetConfScoreEndpoint.Handler(factory);
+        var query = new DotNetConfScoreEndpoint { Year = 2026 };
+
+        await handler.Handle(query, CancellationToken.None);
+    }
 }
