@@ -144,11 +144,11 @@ dnx ardalis courses --page-size 5
 Display top videos from .NET Conf playlists:
 
 ```bash
-dnx ardalis dotnetconf-score 2025
-# or other years: 2024, 2023, 2022, 2021
+dnx ardalis dotnetconf-score 2026
+# or other years: 2025, 2024, 2023, 2022, 2021
 dnx ardalis dotnetconf-score 2024
 # save results as a markdown file
-dnx ardalis dotnetconf-score 2025 --output results.md
+dnx ardalis dotnetconf-score 2026 --output results.md
 dnx ardalis dotnetconf-score 2024 -o output.md
 ```
 
@@ -274,7 +274,7 @@ ardalis books      # Display published books
 ardalis courses    # Display available courses
 ardalis courses --no-paging  # Display all courses at once
 ardalis recent     # Display recent activity
-ardalis dotnetconf-score 2025  # Display top .NET Conf videos by views
+ardalis dotnetconf-score 2026  # Display top .NET Conf videos by views
 ardalis nimblepros # Open NimblePros website
 ardalis contact    # Open contact page
 ardalis speaker    # Open Sessionize speaker profile

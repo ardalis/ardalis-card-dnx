@@ -58,4 +58,12 @@ public class ExtractVideoIdTests
 
     await Assert.That(result).IsNull();
   }
+
+  [Test]
+  public async Task ExtractVideoId_ReturnsId_WhenUrlIsYoutuBeShortLink()
+  {
+    var result = Invoke("https://youtu.be/HK3IwBezg0w?si=oxhW8ZD7_FzTtDMb");
+
+    await Assert.That(result).IsEqualTo("HK3IwBezg0w");
+  }
 }

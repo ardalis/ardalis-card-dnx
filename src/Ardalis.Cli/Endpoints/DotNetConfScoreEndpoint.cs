@@ -35,6 +35,28 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
     private const string PlaylistsJsonUrl = "https://ardalis.com/playlists.json";
     private const string EncodedPayload = "c2d3cTRzQlJMVUxyWThXOXcyeUdEcFY5aGRQSGNTS3ZHNHVwdjcwcmFDQQ==";
 
+    /// <summary>
+    /// Known .NET Conf playlists shipped with the CLI. These are merged with the remote
+    /// playlists.json so new years work even before the website is updated, and they act
+    /// as a fallback when the remote data can't be fetched.
+    /// </summary>
+    internal static readonly IReadOnlyList<PlaylistInfo> BuiltInPlaylists =
+    [
+        Playlist(2026, "PLJL9Ln_f6sGM", "https://www.youtube.com/watch?v=HK3IwBezg0w"),
+            Playlist(2025, "PLdo4fOcmZ0oXtIlvq1tuORUtZqVG-HdCt", "https://www.youtube.com/watch?v=rjefnUC9Z90"),
+            Playlist(2024, "PLdo4fOcmZ0oXeSG8BgCVru3zQtw_K4ANY", "https://www.youtube.com/watch?v=zw-ZtB1BNl8"),
+            Playlist(2023, "PLdo4fOcmZ0oULyHSPBx-tQzePOYlhvrAU", "https://www.youtube.com/watch?v=yF9SwL0p0Y0"),
+            Playlist(2022, "PLdo4fOcmZ0oVlqu_V8EXUDDnPsYwemxjn", "https://www.youtube.com/watch?v=j6u7Pw6dyUw"),
+            Playlist(2021, "PLdo4fOcmZ0oVFtp9MDEBNbA2sSqYvXSXO", "https://www.youtube.com/watch?v=lkmvnjypENw"),
+        ];
+
+    private static PlaylistInfo Playlist(int year, string listId, string highlightUrl) => new()
+    {
+      Name = $".NET Conf {year}",
+      Url = $"https://www.youtube.com/playlist?list={listId}",
+      HighlightVideos = [new HighlightVideo { Url = highlightUrl }]
+    };
+
     private int GetDefaultYear() => DateTime.Now.Month >= 11 ? DateTime.Now.Year : DateTime.Now.Year - 1;
     public async ValueTask<Unit> Handle(DotNetConfScoreEndpoint query, CancellationToken ct)
     {
@@ -48,11 +70,11 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
       try
       {
         // Fetch playlists data using ArdalisWeb client
-        List<PlaylistInfo> playlists = await FetchPlaylistsDataAsync(ct);
+        List<PlaylistInfo> remotePlaylists = await FetchPlaylistsDataAsync(ct);
+        List<PlaylistInfo> playlists = MergePlaylists(remotePlaylists, BuiltInPlaylists);
 
         // Find matching playlist
-        PlaylistInfo? playlist = playlists.FirstOrDefault(p =>
-            p.Name.Contains(year.ToString(), StringComparison.OrdinalIgnoreCase));
+        PlaylistInfo? playlist = playlists.FirstOrDefault(p => ExtractYear(p.Name) == year);
 
         if (playlist == null)
         {
@@ -60,7 +82,8 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
           IEnumerable<int> availableYears = playlists
               .Select(p => ExtractYear(p.Name))
               .Where(y => y.HasValue)
-              .Select(y => y!.Value);
+              .Select(y => y!.Value)
+              .Distinct();
           terminal.WriteLine($"Available years: {string.Join(", ", availableYears)}".Gray());
           return default;
         }
@@ -122,13 +145,44 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 
     private async Task<List<PlaylistInfo>> FetchPlaylistsDataAsync(CancellationToken ct)
     {
-      HttpClient webClient = httpClientFactory.CreateClient("ArdalisWeb");
-      string response = await webClient.GetStringAsync(PlaylistsJsonUrl, ct);
-      List<PlaylistInfo>? playlists = JsonSerializer.Deserialize<List<PlaylistInfo>>(response, new JsonSerializerOptions
+      try
       {
-        PropertyNameCaseInsensitive = true
-      });
-      return playlists ?? [];
+        HttpClient webClient = httpClientFactory.CreateClient("ArdalisWeb");
+        string response = await webClient.GetStringAsync(PlaylistsJsonUrl, ct);
+        List<PlaylistInfo>? playlists = JsonSerializer.Deserialize<List<PlaylistInfo>>(response, new JsonSerializerOptions
+        {
+          PropertyNameCaseInsensitive = true
+        });
+        return playlists?.Where(p => p is not null && !string.IsNullOrWhiteSpace(p.Name)).ToList() ?? [];
+      }
+      catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException && !ct.IsCancellationRequested)
+      {
+        // Remote data is optional; the built-in playlists are used instead.
+        TimeWarpTerminal.Default.WriteLine("Could not load the latest playlist list from ardalis.com; using built-in playlists.".Gray());
+        return [];
+      }
+    }
+
+    /// <summary>
+    /// Combines remote playlists with built-in ones. Remote entries take precedence for any
+    /// year they define; built-in entries fill in years missing from the remote data.
+    /// Results are ordered newest year first.
+    /// </summary>
+    internal static List<PlaylistInfo> MergePlaylists(
+        IEnumerable<PlaylistInfo> remote,
+        IEnumerable<PlaylistInfo> builtIn)
+    {
+      List<PlaylistInfo> remoteList = remote.ToList();
+      HashSet<int> remoteYears = remoteList
+          .Select(p => ExtractYear(p.Name))
+          .Where(y => y.HasValue)
+          .Select(y => y!.Value)
+          .ToHashSet();
+
+      return remoteList
+          .Concat(builtIn.Where(p => ExtractYear(p.Name) is int y && !remoteYears.Contains(y)))
+          .OrderByDescending(p => ExtractYear(p.Name) ?? 0)
+          .ToList();
     }
 
     private static void WriteMarkdownFile(List<VideoDetails> videos, HashSet<string> highlightVideoIds, int year, string filePath)
@@ -204,11 +258,17 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
 
     private static string? ExtractVideoId(string url)
     {
-      Match match = Regex.Match(url, @"[?&]v=([^&]+)");
-      return match.Success ? match.Groups[1].Value : null;
+      Match match = Regex.Match(url, @"[?&]v=([^&#]+)");
+      if (match.Success)
+      {
+        return match.Groups[1].Value;
+      }
+
+      Match shortMatch = Regex.Match(url, @"youtu\.be/([^?&#/]+)");
+      return shortMatch.Success ? shortMatch.Groups[1].Value : null;
     }
 
-    private static int? ExtractYear(string name)
+    internal static int? ExtractYear(string name)
     {
       Match match = Regex.Match(name, @"\b(20\d{2})\b");
       return match.Success && int.TryParse(match.Groups[1].Value, out int year) ? year : null;
@@ -216,7 +276,7 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
   }
 
   // JSON models for playlists.json
-  private sealed class PlaylistInfo
+  internal sealed class PlaylistInfo
   {
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
@@ -228,7 +288,7 @@ public sealed class DotNetConfScoreEndpoint : IQuery<Unit>
     public List<HighlightVideo> HighlightVideos { get; set; } = [];
   }
 
-  private sealed class HighlightVideo
+  internal sealed class HighlightVideo
   {
     [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
