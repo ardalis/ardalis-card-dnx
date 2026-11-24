@@ -1,0 +1,5 @@
+# Bulk formatting commits to skip in git blame.
+# Use with: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: reformat codebase to 2-space indentation and UTF-8 BOM (#77)
+1c649336f625cdb9f7e5f5b352f9f7d0732e1115

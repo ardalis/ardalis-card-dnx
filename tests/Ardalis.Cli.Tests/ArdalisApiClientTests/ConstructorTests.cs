@@ -1,4 +1,4 @@
-using Ardalis.Cli.Services;
+﻿using Ardalis.Cli.Services;
 
 namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
 
@@ -9,67 +9,67 @@ namespace Ardalis.Cli.Tests.ArdalisApiClientTests;
 /// </summary>
 public class ConstructorTests
 {
-    // --- (string apiKey) overload ---
+  // --- (string apiKey) overload ---
 
-    [Test]
-    public async Task ThrowsArgumentException_WhenApiKeyIsNull()
-    {
-        await Assert.That(() => new ArdalisApiClient(null!)).Throws<ArgumentException>();
-    }
+  [Test]
+  public async Task ThrowsArgumentException_WhenApiKeyIsNull()
+  {
+    await Assert.That(() => new ArdalisApiClient(null!)).Throws<ArgumentException>();
+  }
 
-    [Test]
-    public async Task ThrowsArgumentException_WhenApiKeyIsEmpty()
-    {
-        await Assert.That(() => new ArdalisApiClient(string.Empty)).Throws<ArgumentException>();
-    }
+  [Test]
+  public async Task ThrowsArgumentException_WhenApiKeyIsEmpty()
+  {
+    await Assert.That(() => new ArdalisApiClient(string.Empty)).Throws<ArgumentException>();
+  }
 
-    [Test]
-    public async Task ThrowsArgumentException_WhenApiKeyIsWhitespace()
-    {
-        await Assert.That(() => new ArdalisApiClient("   ")).Throws<ArgumentException>();
-    }
+  [Test]
+  public async Task ThrowsArgumentException_WhenApiKeyIsWhitespace()
+  {
+    await Assert.That(() => new ArdalisApiClient("   ")).Throws<ArgumentException>();
+  }
 
-    [Test]
-    public async Task Succeeds_WhenApiKeyIsValid()
-    {
-        using var client = new ArdalisApiClient("valid-api-key");
+  [Test]
+  public async Task Succeeds_WhenApiKeyIsValid()
+  {
+    using var client = new ArdalisApiClient("valid-api-key");
 
-        await Assert.That(client).IsNotNull();
-    }
+    await Assert.That(client).IsNotNull();
+  }
 
-    // --- (HttpClient, string apiKey) overload ---
+  // --- (HttpClient, string apiKey) overload ---
 
-    [Test]
-    public async Task ThrowsArgumentNullException_WhenHttpClientIsNull()
-    {
-        await Assert.That(() => new ArdalisApiClient((HttpClient)null!, "valid-api-key"))
-            .Throws<ArgumentNullException>();
-    }
+  [Test]
+  public async Task ThrowsArgumentNullException_WhenHttpClientIsNull()
+  {
+    await Assert.That(() => new ArdalisApiClient((HttpClient)null!, "valid-api-key"))
+        .Throws<ArgumentNullException>();
+  }
 
-    [Test]
-    public async Task ThrowsArgumentException_WhenApiKeyIsNullWithHttpClientOverload()
-    {
-        using var httpClient = new HttpClient();
+  [Test]
+  public async Task ThrowsArgumentException_WhenApiKeyIsNullWithHttpClientOverload()
+  {
+    using var httpClient = new HttpClient();
 
-        await Assert.That(() => new ArdalisApiClient(httpClient, null!))
-            .Throws<ArgumentException>();
-    }
+    await Assert.That(() => new ArdalisApiClient(httpClient, null!))
+        .Throws<ArgumentException>();
+  }
 
-    [Test]
-    public async Task ThrowsArgumentException_WhenApiKeyIsEmptyWithHttpClientOverload()
-    {
-        using var httpClient = new HttpClient();
+  [Test]
+  public async Task ThrowsArgumentException_WhenApiKeyIsEmptyWithHttpClientOverload()
+  {
+    using var httpClient = new HttpClient();
 
-        await Assert.That(() => new ArdalisApiClient(httpClient, string.Empty))
-            .Throws<ArgumentException>();
-    }
+    await Assert.That(() => new ArdalisApiClient(httpClient, string.Empty))
+        .Throws<ArgumentException>();
+  }
 
-    [Test]
-    public async Task Succeeds_WhenBothHttpClientAndApiKeyAreValid()
-    {
-        using var httpClient = new HttpClient();
-        using var client = new ArdalisApiClient(httpClient, "valid-api-key");
+  [Test]
+  public async Task Succeeds_WhenBothHttpClientAndApiKeyAreValid()
+  {
+    using var httpClient = new HttpClient();
+    using var client = new ArdalisApiClient(httpClient, "valid-api-key");
 
-        await Assert.That(client).IsNotNull();
-    }
+    await Assert.That(client).IsNotNull();
+  }
 }

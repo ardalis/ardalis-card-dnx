@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Ardalis.Cli.Endpoints;
 
 namespace Ardalis.Cli.Tests.Endpoints.VersionEndpointTests;
@@ -11,25 +11,25 @@ namespace Ardalis.Cli.Tests.Endpoints.VersionEndpointTests;
 /// </summary>
 public class HandlerTests
 {
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenHttpCallCancelled()
-    {
-        var handler = new VersionEndpoint.Handler();
-        var query = new VersionEndpoint();
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenHttpCallCancelled()
+  {
+    var handler = new VersionEndpoint.Handler();
+    var query = new VersionEndpoint();
+    using var cts = new CancellationTokenSource();
+    cts.Cancel();
 
-        // The GetStringAsync call throws OperationCanceledException,
-        // caught by catch(Exception ex) → writes error message, returns default.
-        await handler.Handle(query, cts.Token);
-    }
+    // The GetStringAsync call throws OperationCanceledException,
+    // caught by catch(Exception ex) → writes error message, returns default.
+    await handler.Handle(query, cts.Token);
+  }
 
-    [Test]
-    public async Task Handle_DoesNotThrow_WhenHandlerInstantiatedWithNoArgs()
-    {
-        // Confirms Handler has no required dependencies and can be constructed directly.
-        var handler = new VersionEndpoint.Handler();
+  [Test]
+  public async Task Handle_DoesNotThrow_WhenHandlerInstantiatedWithNoArgs()
+  {
+    // Confirms Handler has no required dependencies and can be constructed directly.
+    var handler = new VersionEndpoint.Handler();
 
-        await Assert.That(handler).IsNotNull();
-    }
+    await Assert.That(handler).IsNotNull();
+  }
 }
