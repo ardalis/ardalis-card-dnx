@@ -16,8 +16,8 @@
     <RollForward>Major</RollForward>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.25.0</Version>
-    <ReleaseNotes>Fix nuget dependency errors.</ReleaseNotes>
+    <Version>1.26.0</Version>
+    <ReleaseNotes>Added .NET Conf 2026 support to dotnetconf-score/dotnetconf-stats. Fixed opening URLs from WSL.</ReleaseNotes>
     <RootNamespace>Ardalis.Cli</RootNamespace>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
