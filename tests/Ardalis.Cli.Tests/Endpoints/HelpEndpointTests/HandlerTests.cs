@@ -58,14 +58,35 @@ public class HandlerTests
     await Assert.That(output).Contains("dotnetconf-stats");
     await Assert.That(output).Contains("Alias for dotnetconf-score");
     await Assert.That(output).Contains("exit, quit, q");
+    await Assert.That(output).Contains("clear-history");
     await Assert.That(output).Contains("--help");
   }
 
   [Test]
-  public async Task Handle_DoesNotThrow()
+  [NotInParallel]
+  public async Task Main_RoutesHelpCommand_ToCommandList()
   {
-    var handler = new HelpEndpoint.Handler();
+    // Interactive mode sends each line through the same generated router as the command line,
+    // so routing "help" through Program.Main covers the issue #81 regression.
+    // Point telemetry at an unreachable local port so the test sends no analytics events.
+    string? originalHost = Environment.GetEnvironmentVariable("POSTHOG_HOST");
+    int exitCode;
+    try
+    {
+      Environment.SetEnvironmentVariable("POSTHOG_HOST", "http://127.0.0.1:9/");
 
-    await handler.Handle(new HelpEndpoint(), CancellationToken.None);
+      exitCode = await Program.Main(["help"]);
+    }
+    finally
+    {
+      Environment.SetEnvironmentVariable("POSTHOG_HOST", originalHost);
+    }
+
+    // TUnit captures console output per test.
+    string text = TestContext.Current!.GetStandardOutput();
+    await Assert.That(exitCode).IsEqualTo(0);
+    await Assert.That(text).Contains("Commands:");
+    await Assert.That(text).Contains("Display Ardalis's business card");
+    await Assert.That(text).DoesNotContain("Unknown command");
   }
 }

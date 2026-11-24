@@ -30,7 +30,7 @@ public sealed class HelpEndpoint : IQuery<Unit>
   public static IReadOnlyList<CommandInfo> GetCommands() => Commands.Value;
 
   private static IReadOnlyList<CommandInfo> DiscoverCommands() =>
-    [.. typeof(HelpEndpoint).Assembly.GetTypes()
+    [.. GetLoadableTypes(typeof(HelpEndpoint).Assembly)
       .Select(type => (Route: type.GetCustomAttribute<NuruRouteAttribute>(), Alias: type.GetCustomAttribute<NuruRouteAliasAttribute>()))
       .Where(x => x.Route is not null && !string.IsNullOrWhiteSpace(x.Route.Pattern))
       .Select(x => new CommandInfo(
@@ -38,6 +38,19 @@ public sealed class HelpEndpoint : IQuery<Unit>
         x.Route.Description ?? string.Empty,
         x.Alias?.Aliases ?? []))
       .OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase)];
+
+  private static Type[] GetLoadableTypes(Assembly assembly)
+  {
+    try
+    {
+      return assembly.GetTypes();
+    }
+    catch (ReflectionTypeLoadException ex)
+    {
+      // Still list the commands whose types did load.
+      return [.. ex.Types.OfType<Type>()];
+    }
+  }
 
   /// <summary>
   /// Writes the command list, plus the interactive-mode built-ins, to the terminal.
@@ -49,7 +62,9 @@ public sealed class HelpEndpoint : IQuery<Unit>
     // Keep command names whole on narrow terminals; only the description may be truncated.
     int nameWidth = commands
       .SelectMany(c => c.Aliases.Prepend(c.Name))
-      .Max(name => name.Length);
+      .Select(name => name.Length)
+      .DefaultIfEmpty(0)
+      .Max();
 
     terminal.WriteLine("Commands:".Cyan().Bold());
     terminal.WriteTable(table =>
@@ -75,7 +90,8 @@ public sealed class HelpEndpoint : IQuery<Unit>
       .HideHeaders()
       .AddRow("exit, quit, q", "Leave interactive mode")
       .AddRow("clear, cls", "Clear the screen")
-      .AddRow("history", "Show command history"));
+      .AddRow("history", "Show command history")
+      .AddRow("clear-history", "Clear command history"));
 
     terminal.WriteLine("Run '<command> --help' for details on a command's options.");
   }

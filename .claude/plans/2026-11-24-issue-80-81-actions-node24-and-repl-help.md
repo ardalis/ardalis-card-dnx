@@ -20,9 +20,9 @@ Both ship in a single PR (user request).
 
 ## Phase 1: GitHub Actions (#80)
 
-- [x] `build.yml`: `actions/checkout@v4` → `@v6`, `actions/setup-dotnet@v4` → `@v5`,
-      `actions/upload-artifact@v4` → `@v5` (2 steps). See the note on versions below.
-- [x] `publish.yml`: `actions/checkout@v4` → `@v6`, `actions/setup-dotnet@v4` → `@v5`.
+- [x] `build.yml`: `actions/checkout@v4` → `@v7`, `actions/setup-dotnet@v4` → `@v6`,
+      `actions/upload-artifact@v4` → `@v7` (2 steps). All three target node24.
+- [x] `publish.yml`: `actions/checkout@v4` → `@v7`, `actions/setup-dotnet@v4` → `@v6`.
 - [x] Check release notes for breaking changes (upload-artifact hidden files / artifact naming;
       checkout credentials persistence; setup-dotnet cache defaults).
 
@@ -57,3 +57,23 @@ Both ship in a single PR (user request).
 - [x] Manual check: `ardalis help` prints the command list; `ardalis -i` no longer crashes.
 - [ ] PR CI is green, with no Node 20 deprecation warning and the coverage comment posted
       (checked after the PR opens).
+
+## Review outcome
+
+A separate review agent found nothing significant. How each minor finding and nit was handled:
+
+- Added `clear-history` to the interactive built-ins list (Nuru supports it).
+- README: documented `help` in interactive mode. Fixed two inaccurate lines: the exit instructions
+  (empty Enter doesn't exit; `q` does) and "`ardalis` shows help" (no args starts interactive mode).
+- Added `Main_RoutesHelpCommand_ToCommandList`, which runs `Program.Main(["help"])` through the
+  generated router (the actual #81 regression). Telemetry is pointed at an unreachable local port
+  so tests send no analytics. Mutation check: renaming the route makes this test fail. Removed
+  `Handle_DoesNotThrow`, which asserted nothing.
+- Guarded `Assembly.GetTypes()` against `ReflectionTypeLoadException`, and `.Max()` against an
+  empty sequence.
+- Fixed the action versions in this plan.
+- **Not addressed:** the `dotnetconf-score` description is long and gets truncated in the help
+  table. This is pre-existing, and the generated `--help` truncates it the same way. Out of scope.
+- **Behaviour note (PR description):** `ardalis -i <command>` used to open the REPL because only
+  `args[0]` was checked. Now only `-i` / `--interactive` on its own starts it.
+- **Out of scope:** the Nuru REPL can't read piped/redirected stdin (`ReplConsoleReader` uses `ReadKey`).
