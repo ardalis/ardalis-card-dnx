@@ -8,8 +8,13 @@ if (!isCI)
 
 Run("dotnet", "test --project tests/Ardalis.Cli.Tests --coverage --coverage-output coverage/coverage.cobertura.xml --coverage-output-format cobertura --coverage-settings coverage.settings");
 
-// MTP places coverage inside the test binary's TestResults folder
-var coverageFile = Directory.GetFiles("tests", "coverage.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault();
+// Depending on the SDK version, MTP writes coverage either inside the test binary's
+// TestResults folder (under tests/) or in TestResults/ at the repo root. Pick the newest.
+var coverageFile = new[] { "tests", "TestResults" }
+    .Where(Directory.Exists)
+    .SelectMany(dir => Directory.GetFiles(dir, "coverage.cobertura.xml", SearchOption.AllDirectories))
+    .OrderByDescending(File.GetLastWriteTimeUtc)
+    .FirstOrDefault();
 if (coverageFile is null)
 {
     Console.Error.WriteLine("No coverage.cobertura.xml found.");
