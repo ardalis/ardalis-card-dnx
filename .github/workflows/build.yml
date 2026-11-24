@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '10.0.x'
 
@@ -42,7 +42,7 @@ jobs:
         output: 'both'
 
     - name: Upload code coverage results artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: success() || failure()
       with:
         name: code-coverage-results
@@ -60,7 +60,7 @@ jobs:
         echo "code-coverage-results.md" > artifact_path.txt
 
     - name: Upload workflow outputs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: github.event_name == 'pull_request' && (success() || failure())
       with:
         name: workflow-outputs

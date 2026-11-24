@@ -24,8 +24,10 @@ That's it! The first time you run it, you'll be prompted to confirm the download
 View help and available commands:
 
 ```bash
-dnx ardalis
+dnx ardalis --help
 ```
+
+Running `dnx ardalis` with no arguments starts [interactive mode](#interactive-mode).
 
 Display the business card:
 
@@ -191,9 +193,12 @@ Run in interactive mode to execute multiple commands without re-running the tool
 dnx ardalis -i
 ```
 
-In interactive mode, simply type commands:
+In interactive mode, simply type commands. Type `help` to list them:
 
 ```text
+> help
+(lists available commands)
+
 > card
 (displays card)
 
@@ -221,7 +226,7 @@ In interactive mode, simply type commands:
 > exit
 ```
 
-Exit by typing `exit`, `quit`, or pressing Enter on an empty line.
+Exit by typing `exit`, `quit`, or `q`.
 
 ### Recent Activity Command
 
@@ -256,7 +261,8 @@ dotnet tool install -g ardalis
 Then run from anywhere:
 
 ```bash
-ardalis            # Show help
+ardalis            # Start interactive mode
+ardalis help       # List available commands
 ardalis card       # Display business card
 ardalis blog       # Open blog
 ardalis dometrain  # Open Dometrain Author profile

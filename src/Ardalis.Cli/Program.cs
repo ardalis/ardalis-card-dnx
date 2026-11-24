@@ -64,13 +64,8 @@ public class Program
         })
         .Build();
 
-    // Check for interactive mode flag
-    if (args.Length > 0 && (args[0] == "-i" || args[0] == "--interactive"))
-    {
-      await app.RunReplAsync();
-      return default;
-    }
-
+    // RunAsync is source-generated: it also starts interactive mode for "-i"/"--interactive"
+    // or when no arguments are given (AutoStartWhenEmpty).
     await app.RunAsync(args);
     return default;
 
